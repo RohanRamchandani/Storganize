@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #080b14;
+    --surface: #0d1120;
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #7c6af7;
+    --accent-dim: rgba(124, 106, 247, 0.15);
+    --text: #f0f2ff;
+    --text-muted: #8892b0;
+    --nav-h: 52px;
+    --grad: linear-gradient(135deg, #7c6af7, #4fc3f7);
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(124, 106, 247, 0.35);
+    border-radius: 10px;
+}
+
+.navbar {
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8, 11, 20, 0.95);
+    backdrop-filter: blur(12px);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--grad);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 3px;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: 7px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.tab-btn:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tab-btn.tab-active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid rgba(124, 106, 247, 0.25);
+}
+
+.tab-icon {
+    font-size: 14px;
+}
+
+.status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #43e97b;
+    animation: pulse 2s ease infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.panel-area {
+    height: calc(100vh - var(--nav-h));
+    display: flex;
+    align-items: stretch;
+    padding: 12px;
+}
+
+.panel {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-muted);
+    user-select: none;
+}
+
+.empty-icon {
+    font-size: 40px;
+    opacity: 0.5;
+}
+
+.empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    opacity: 0.35;
+}
+
+.empty-sub {
+    font-size: 13px;
+    opacity: 0.5;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.2s ease forwards;
+}
