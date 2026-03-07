@@ -8,9 +8,9 @@ import CalibrationModal from './CalibrationModal'
 import './CameraPanel.css'
 
 // ── Motion detection constants ─────────────────────────────────
-const IDLE_INTERVAL_MS   = 1000
+const IDLE_INTERVAL_MS   = 500    // poll twice per second when idle
 const ACTIVE_INTERVAL_MS = 120
-const MOTION_THRESHOLD   = 20
+const MOTION_THRESHOLD   = 15    // more sensitive — triggers on light movement
 const IDLE_TIMEOUT_MS    = 3 * 60 * 1000
 const SAMPLE_W = 64, SAMPLE_H = 48
 const PIXEL_W  = 96, PIXEL_H  = 72
@@ -529,6 +529,18 @@ export default function CameraPanel() {
 
     const handleRootClick = useCallback(() => { unlockAudio().then(() => setAudioUnlocked(true)) }, [])
 
+    // Manual wake-up: lets user click to go active immediately instead of waiting for motion poll
+    const wakeUp = useCallback(() => {
+        unlockAudio().then(() => setAudioUnlocked(true))
+        if (mode === 'idle') {
+            lastMotion.current = Date.now()
+            stopPixelDraw()
+            clearInterval(intervalRef.current)
+            intervalRef.current = setInterval(checkMotion, ACTIVE_INTERVAL_MS)
+            setMode('active')
+        }
+    }, [mode, stopPixelDraw, checkMotion])
+
     return (
         <div className="camera-root" onClick={handleRootClick}>
             {/* Hidden canvases */}
@@ -566,7 +578,14 @@ export default function CameraPanel() {
                     ref={pixelRef} className="pixelated-canvas"
                     width={PIXEL_W} height={PIXEL_H}
                     style={{ display: isActive ? 'none' : 'block' }}
+                    onClick={wakeUp}
+                    title="Click to wake up"
                 />
+                {!isActive && camReady && (
+                    <div className="idle-wake-hint" onClick={wakeUp}>
+                        <span>👁 Click anywhere to wake up</span>
+                    </div>
+                )}
 
                 {/* Depth + dwell canvas overlay */}
                 <canvas ref={overlayRef} className="depth-overlay-canvas" />

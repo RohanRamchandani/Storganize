@@ -49,30 +49,23 @@ export default function App() {
                         </nav>
 
                         <main className="panel-area">
-                            {activeTab === 'camera' && (
-                                <div className="panel fade-in" style={{ padding: 0, overflow: 'hidden' }}>
-                                    <CameraPanel />
+                            {/* Always mounted — hidden with display:none to preserve camera + MediaPipe state across tab switches */}
+                            <div className="panel" style={{ padding: 0, overflow: 'hidden', display: activeTab === 'camera' ? 'flex' : 'none', flexDirection: 'column', height: '100%' }}>
+                                <CameraPanel />
+                            </div>
+                            <div className="panel" style={{ padding: 0, overflow: 'hidden', display: activeTab === 'boundaries' ? 'flex' : 'none', flexDirection: 'column', height: '100%' }}>
+                                <BoundariesPanel />
+                            </div>
+                            <div className="panel" style={{ padding: 0, overflow: 'hidden', display: activeTab === 'inventory' ? 'flex' : 'none', flexDirection: 'column', height: '100%' }}>
+                                <InventoryPanel />
+                            </div>
+                            <div className="panel" style={{ display: activeTab === 'settings' ? 'flex' : 'none', flexDirection: 'column', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                <div className="panel-empty">
+                                    <span className="empty-icon">⚙️</span>
+                                    <h2 className="empty-title">Settings</h2>
+                                    <p className="empty-sub">Configuration will appear here</p>
                                 </div>
-                            )}
-                            {activeTab === 'boundaries' && (
-                                <div className="panel fade-in" style={{ padding: 0, overflow: 'hidden' }}>
-                                    <BoundariesPanel />
-                                </div>
-                            )}
-                            {activeTab === 'inventory' && (
-                                <div className="panel fade-in" style={{ padding: 0, overflow: 'hidden' }}>
-                                    <InventoryPanel />
-                                </div>
-                            )}
-                            {activeTab === 'settings' && (
-                                <div className="panel fade-in">
-                                    <div className="panel-empty">
-                                        <span className="empty-icon">⚙️</span>
-                                        <h2 className="empty-title">Settings</h2>
-                                        <p className="empty-sub">Configuration will appear here</p>
-                                    </div>
-                                </div>
-                            )}
+                            </div>
                         </main>
                     </div>
                 </DepthProvider>
