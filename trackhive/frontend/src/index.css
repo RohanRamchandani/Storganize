@@ -67,3 +67,16 @@ html, body, #root {
   border: 1px solid var(--th-border);
   box-shadow: var(--shadow-glass);
 }
+
+/* ───── Layout ───── */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}

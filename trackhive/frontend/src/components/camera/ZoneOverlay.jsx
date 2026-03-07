@@ -1,16 +1,10 @@
-import { useEffect, useCallback } from 'react';
-import useCamera from '../../hooks/useCamera';
-import './ZoneOverlay.css';
+import { useEffect, useRef } from 'react';
 
-/**
- * Renders semi-transparent zone rectangles on a <canvas> that sits
- * right on top of the webcam feed.  The canvas auto-resizes via
- * ResizeObserver so zones always stay proportional.
- */
-export default function ZoneOverlay() {
-  const { canvasRef, zones, activeZone, mode } = useCamera();
+// Shared ZoneOverlay used in the Main View to show defined zones continuously
+export default function ZoneOverlay({ zones, highlightedZoneId }) {
+  const canvasRef = useRef(null);
 
-  const draw = useCallback(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -18,77 +12,57 @@ export default function ZoneOverlay() {
 
     ctx.clearRect(0, 0, W, H);
 
-    // Only draw zones in setup or scanning mode
-    if (mode === 'idle') return;
+    zones.forEach((z) => {
+      const x = z.x_min * W;
+      const y = z.y_min * H;
+      const w = (z.x_max - z.x_min) * W;
+      const h = (z.y_max - z.y_min) * H;
 
-    zones.forEach((zone) => {
-      const x = zone.x * W;
-      const y = zone.y * H;
-      const w = zone.w * W;
-      const h = zone.h * H;
-      const isActive = activeZone === zone.id;
+      const isHighlighted = highlightedZoneId === z.id;
 
-      // Fill
-      ctx.fillStyle = isActive
-        ? hexToRgba(zone.color, 0.35)
-        : hexToRgba(zone.color, 0.15);
+      ctx.fillStyle = isHighlighted 
+        ? 'rgba(34, 197, 94, 0.3)' 
+        : 'rgba(99, 102, 241, 0.15)';
       ctx.fillRect(x, y, w, h);
 
-      // Border
-      ctx.strokeStyle = zone.color;
-      ctx.lineWidth = isActive ? 3 : 1.5;
-      ctx.setLineDash(isActive ? [] : [6, 4]);
+      ctx.strokeStyle = isHighlighted ? '#22c55e' : '#6366f1';
+      ctx.lineWidth = isHighlighted ? 3 : 1.5;
+      if (!isHighlighted) ctx.setLineDash([4, 4]);
       ctx.strokeRect(x, y, w, h);
       ctx.setLineDash([]);
 
-      // Label
-      ctx.font = `600 ${Math.max(12, H * 0.025)}px Inter, system-ui, sans-serif`;
+      ctx.font = '600 14px Inter, sans-serif';
       ctx.fillStyle = '#fff';
-      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
       ctx.shadowBlur = 4;
-      ctx.fillText(zone.label, x + 8, y + Math.max(18, H * 0.035));
+      ctx.fillText(z.name, x + 8, y + 22);
       ctx.shadowBlur = 0;
 
-      // Active glow outline
-      if (isActive) {
-        ctx.save();
-        ctx.shadowColor = zone.color;
-        ctx.shadowBlur = 18;
-        ctx.strokeStyle = zone.color;
-        ctx.lineWidth = 2;
+      if (isHighlighted) {
+        ctx.shadowColor = '#22c55e';
+        ctx.shadowBlur = 20;
         ctx.strokeRect(x, y, w, h);
-        ctx.restore();
       }
     });
-  }, [canvasRef, zones, activeZone, mode]);
 
-  // Re-draw whenever deps change
-  useEffect(() => {
-    draw();
-  }, [draw]);
+  }, [zones, highlightedZoneId]);
 
-  // Keep canvas size in sync with its CSS dimensions
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
     const ro = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      canvas.width = width;
-      canvas.height = height;
-      draw();
+      canvas.width = entry.contentRect.width;
+      canvas.height = entry.contentRect.height;
     });
     ro.observe(canvas);
     return () => ro.disconnect();
-  }, [canvasRef, draw]);
+  }, []);
 
-  return <canvas ref={canvasRef} className="zone-overlay-canvas" />;
-}
-
-/* ── helpers ── */
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="main-zone-overlay" 
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 5 }}
+    />
+  );
 }

@@ -1,0 +1,17 @@
+/* ───── Zone Drawing Canvas ───── */
+.zone-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  cursor: crosshair;
+}
+
+.zone-canvas.drawing {
+  cursor: crosshair;
+}
+
+.zone-canvas.disabled {
+  pointer-events: none;
+}
