@@ -12,9 +12,11 @@ function timeAgo(iso) {
     return `${Math.floor(s / 86400)}d ago`
 }
 
-function groupBy(arr, key) {
+const UNASSIGNED_KEY = '__unassigned__'
+
+function groupBy(arr, key, fallback = UNASSIGNED_KEY) {
     return arr.reduce((acc, item) => {
-        const k = item[key] || 'Uncategorized'
+        const k = item[key] != null ? item[key] : fallback
         if (!acc[k]) acc[k] = []
         acc[k].push(item)
         return acc
@@ -125,9 +127,9 @@ export default function InventoryPanel() {
         ? items.filter(i => i.zone === zoneFilter)
         : items
 
-    const byCategory = groupBy(filteredItems, 'category')
+    const byCategory = groupBy(filteredItems, 'category', 'Uncategorized')
     const byZone     = groupBy(filteredItems, 'zone')
-    const unassigned = byZone['null'] || byZone[null] || []
+    const unassigned = byZone[UNASSIGNED_KEY] || []
     const assigned   = zones.map(z => ({ zone: z, items: byZone[z.id] || [] }))
 
     const activeZone = zoneFilter ? zones.find(z => z.id === zoneFilter) : null
