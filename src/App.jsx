@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ZonesProvider } from './context/ZonesContext'
 import { ItemsProvider } from './context/ItemsContext'
 import { DepthProvider } from './context/DepthContext'
+import { SearchProvider } from './context/SearchContext'
 import CameraPanel from './components/CameraPanel'
 import BoundariesPanel from './components/BoundariesPanel'
 import InventoryPanel from './components/InventoryPanel'
@@ -21,6 +22,7 @@ export default function App() {
         <ZonesProvider>
             <ItemsProvider>
                 <DepthProvider>
+                    <SearchProvider>
                     <div className="app-root">
                         <nav className="navbar">
                             <div className="navbar-brand">
@@ -68,6 +70,7 @@ export default function App() {
                             </div>
                         </main>
                     </div>
+                    </SearchProvider>
                 </DepthProvider>
             </ItemsProvider>
         </ZonesProvider>

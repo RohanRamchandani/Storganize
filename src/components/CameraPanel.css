@@ -830,4 +830,90 @@
     color: #f0f2ff;
     border-color: rgba(124, 106, 247, 0.4);
 }
+
+/* ── Zone glow states ───────────────────────────────────────── */
+.zone-hit-found {
+    animation: zoneFoundPulse 1s ease-in-out infinite !important;
+    border-width: 3px !important;
+}
+
+@keyframes zoneFoundPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 transparent, inset 0 0 0 0 transparent;
+        background: rgba(var(--zone-color, 124, 106, 247), 0.08);
+    }
+    50% {
+        box-shadow: 0 0 20px 4px color-mix(in srgb, var(--zone-color, #7c6af7) 50%, transparent),
+                    inset 0 0 30px color-mix(in srgb, var(--zone-color, #7c6af7) 20%, transparent);
+        background: rgba(var(--zone-color, 124, 106, 247), 0.18);
+    }
+}
+
+/* Simpler version using CSS custom property as hex color */
+.zone-hit-found {
+    box-shadow:
+        0 0 0 3px var(--zone-color),
+        0 0 24px 6px color-mix(in srgb, var(--zone-color) 60%, transparent) !important;
+    background: color-mix(in srgb, var(--zone-color) 15%, transparent) !important;
+    animation: zoneGlowPulse 1.1s ease-in-out infinite !important;
+    border-width: 3px !important;
+    cursor: default !important;
+    z-index: 11 !important;
+}
+
+@keyframes zoneGlowPulse {
+    0%, 100% { opacity: 0.85; }
+    50%       { opacity: 1;    }
+}
+
+.zone-hit-filtered {
+    border-width: 2px !important;
+    background: color-mix(in srgb, var(--zone-color) 10%, transparent) !important;
+    box-shadow: 0 0 12px 2px color-mix(in srgb, var(--zone-color) 30%, transparent) !important;
+}
+
+/* ── Footer text search ───────────────────────────────────── */
+.search-input {
+    height: 32px;
+    width: 130px;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: #f0f2ff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.search-input::placeholder {
+    color: rgba(240, 242, 255, 0.3);
+}
+
+.search-input:focus {
+    border-color: rgba(124, 106, 247, 0.5);
+    background: rgba(124, 106, 247, 0.08);
+}
+
+.search-submit {
+    height: 32px;
+    width: 32px;
+    background: rgba(124, 106, 247, 0.12);
+    border: 1px solid rgba(124, 106, 247, 0.3);
+    border-radius: 8px;
+    color: #c4b8ff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.search-submit:hover:not(:disabled) {
+    background: rgba(124, 106, 247, 0.25);
+}
+
+.search-submit:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
 

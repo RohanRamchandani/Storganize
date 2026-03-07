@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import { useItems } from '../context/ItemsContext'
 import { useZones } from '../context/ZonesContext'
 import { useDepth } from '../context/DepthContext'
+import { useSearch } from '../context/SearchContext'
 import { ZoneTracker } from '../lib/zoneTracker'
 import { palmToDepthPosition } from '../lib/depthCalibration'
 import CalibrationModal from './CalibrationModal'
@@ -298,7 +299,10 @@ export default function CameraPanel() {
         return ctx.getImageData(0, 0, SAMPLE_W, SAMPLE_H)
     }, [])
 
-    // ── Find item by voice ────────────────────────────────────────
+    const { setFindResult, setZoneFilter, highlightedZoneId, zoneFilter } = useSearch()
+    const [searchText, setSearchText] = useState('')
+
+    // ── Find item by voice or text ────────────────────────────────
     const findItem = useCallback(async (query) => {
         const q     = query.toLowerCase().trim()
         const words = q.split(/\s+/).filter(w => w.length > 1 && !['a','an','the','my','some'].includes(w))
@@ -316,11 +320,25 @@ export default function CameraPanel() {
         const scored = allItems.map(item => ({ item, s: scoreItem(item) })).filter(({ s }) => s >= 1).sort((a, b) => b.s - a.s)
         const found  = scored.map(({ item }) => item)
 
+        // ── Location query: "what's in Shelf 1" ── matches a zone label
+        const zoneMatch = allZones.find(z => q.includes(z.label.toLowerCase()))
+        if (zoneMatch) {
+            const zoneItems = allItems.filter(i => i.zone === zoneMatch.id)
+            setFindResult(zoneMatch.id, zoneItems[0]?.id ?? null)
+            setZoneFilter(zoneMatch.id)
+            const text = zoneItems.length === 0
+                ? `${zoneMatch.label} is empty.`
+                : `${zoneMatch.label} has ${zoneItems.length} item${zoneItems.length > 1 ? 's' : ''}: ${zoneItems.map(i => i.name).join(', ')}.`
+            await speakText(text)
+            return
+        }
+
         let text
         if (found.length === 0) {
             text = `I couldn't find ${query} in the inventory.`
         } else if (found.length === 1) {
             const zone = allZones.find(z => z.id === found[0].zone)
+            setFindResult(zone?.id ?? null, found[0].id)
             text = zone ? `${found[0].name} is in ${zone.label}.`
                         : `${found[0].name} is in the inventory but hasn't been placed in a zone yet.`
         } else {
@@ -332,9 +350,12 @@ export default function CameraPanel() {
             text = parts.length > 0
                 ? `Found ${found.length} items: ${parts.join(', ')}.`
                 : `Found ${found.length} matches for ${query}, none assigned to a zone yet.`
+            // Highlight the top match
+            const topZone = allZones.find(z => z.id === found[0].zone)
+            setFindResult(topZone?.id ?? null, found[0].id)
         }
         await speakText(text)
-    }, [])
+    }, [setFindResult, setZoneFilter])
 
     // ── Motion check (pixel-diff) ─────────────────────────────────
     const checkMotion = useCallback(() => {
@@ -619,25 +640,37 @@ export default function CameraPanel() {
                     <div className="countdown-badge">Idle in {fmtMs(countdown)}</div>
                 )}
 
-                {/* Zone hitbox overlays — visible only while tracking */}
-                {trackingItemId && zones.length > 0 && (
+                {/* Zone overlay — visible while placing, finding, or filtering */}
+                {(trackingItemId || highlightedZoneId || zoneFilter) && zones.length > 0 && (
                     <div className="zone-overlay-layer">
-                        {zones.map(zone => (
-                            <div
-                                key={zone.id}
-                                className={`zone-hit-rect ${activeZoneId === zone.id ? 'zone-hit-active' : ''}`}
-                                style={{
-                                    left: `${zone.x * 100}%`, top: `${zone.y * 100}%`,
-                                    width: `${zone.w * 100}%`, height: `${zone.h * 100}%`,
-                                    borderColor: zone.color, '--zone-color': zone.color,
-                                }}
-                            >
-                                <span className="zone-hit-label" style={{ background: zone.color }}>
-                                    {zone.label}
-                                    {zone.depthTarget ? ' ◉' : ' ○'}
-                                </span>
-                            </div>
-                        ))}
+                        {zones.map(zone => {
+                            const isHighlighted = zone.id === highlightedZoneId
+                            const isFiltered    = zone.id === zoneFilter
+                            const isActive      = activeZoneId === zone.id
+                            return (
+                                <div
+                                    key={zone.id}
+                                    className={[
+                                        'zone-hit-rect',
+                                        isActive      ? 'zone-hit-active'  : '',
+                                        isHighlighted ? 'zone-hit-found'   : '',
+                                        isFiltered    ? 'zone-hit-filtered' : '',
+                                    ].join(' ').trim()}
+                                    style={{
+                                        left: `${zone.x * 100}%`, top: `${zone.y * 100}%`,
+                                        width: `${zone.w * 100}%`, height: `${zone.h * 100}%`,
+                                        borderColor: zone.color, '--zone-color': zone.color,
+                                    }}
+                                    onClick={() => setZoneFilter(isFiltered ? null : zone.id)}
+                                    title={`Filter inventory by "${zone.label}"`}
+                                >
+                                    <span className="zone-hit-label" style={{ background: zone.color }}>
+                                        {zone.label}
+                                        {zone.depthTarget ? ' ◉' : ' ○'}
+                                    </span>
+                                </div>
+                            )
+                        })}
                     </div>
                 )}
 
@@ -732,6 +765,24 @@ export default function CameraPanel() {
 
                 {/* Buttons */}
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center', marginLeft: 4 }}>
+                    {/* Inline text search */}
+                    <form
+                        style={{ display: 'flex', gap: 4 }}
+                        onSubmit={e => {
+                            e.preventDefault()
+                            const q = searchText.trim()
+                            if (q) { findItemRef.current?.(q); setSearchText('') }
+                        }}
+                    >
+                        <input
+                            className="search-input"
+                            type="text"
+                            placeholder="Find item…"
+                            value={searchText}
+                            onChange={e => setSearchText(e.target.value)}
+                        />
+                        <button className="search-submit" type="submit" disabled={!searchText.trim()}>🔍</button>
+                    </form>
                     <button
                         className="cal-open-btn"
                         onClick={() => setShowCalModal(true)}
