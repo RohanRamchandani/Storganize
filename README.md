@@ -432,13 +432,6 @@ Stifficiency includes a **config-driven settings panel** — adding a new settin
 
 ---
 
-<br/>
-
-## 📜 License
-
-MIT — do whatever you want with it. 🎉
-
-<br/>
 
 ---
 
@@ -446,7 +439,7 @@ MIT — do whatever you want with it. 🎉
 
 <div align="center">
 
-### Built with ❤️ in 48 hours
+### Built it in 48 hours
 
 ### Powered by ☕ caffeine and 🤖 Gemini
 
@@ -455,3 +448,4 @@ MIT — do whatever you want with it. 🎉
 *Wave at it. It waves back.* 👋
 
 </div>
+
