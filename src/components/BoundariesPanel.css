@@ -299,3 +299,52 @@
 .fade-in {
     animation: fadeIn 0.2s ease forwards;
 }
+
+/* ── Zone depth controls ──────────────────────────────────── */
+.zone-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.zone-depth-btn {
+    height: 26px;
+    padding: 0 8px;
+    background: rgba(79, 195, 247, 0.1);
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    border-radius: 6px;
+    color: #4fc3f7;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.zone-depth-btn:hover {
+    background: rgba(79, 195, 247, 0.2);
+}
+
+.zone-depth-clear {
+    height: 26px;
+    width: 26px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 6px;
+    color: #f87171;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.zone-depth-clear:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.zone-depth-badge {
+    font-size: 10px;
+    opacity: 0.7;
+    cursor: default;
+}

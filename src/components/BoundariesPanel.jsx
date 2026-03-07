@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { useZones } from '../context/ZonesContext'
+import ZoneDepthModal from './ZoneDepthModal'
 import './BoundariesPanel.css'
 
 function toNorm(rect, W, H) {
@@ -57,8 +58,9 @@ export default function BoundariesPanel() {
     const [rect, setRect] = useState(null)
     const [pending, setPending] = useState(null)
     const [labelText, setLabelText] = useState('')
+    const [depthZoneId, setDepthZoneId] = useState(null)
 
-    const { zones, addZone, removeZone } = useZones()
+    const { zones, addZone, removeZone, setZoneDepth, clearZoneDepth } = useZones()
 
     useEffect(() => {
         const loop = () => {
@@ -126,7 +128,8 @@ export default function BoundariesPanel() {
     const cancelPending = () => { setPending(null); setLabelText('') }
 
     return (
-        <div className="boundaries-root">
+        <>
+            <div className="boundaries-root">
             <video ref={videoRef} autoPlay muted playsInline style={{ display: 'none' }} />
             <div className="boundaries-viewport">
                 {camError ? (
@@ -185,15 +188,43 @@ export default function BoundariesPanel() {
                             <div key={zone.id} className="zone-item">
                                 <div className="zone-color-dot" style={{ background: zone.color }} />
                                 <div className="zone-info">
-                                    <div className="zone-name">{zone.label}</div>
+                                    <div className="zone-name">
+                                        {zone.label}
+                                        <span className="zone-depth-badge" title={zone.depthTarget ? `Depth: ${zone.depthTarget.toFixed(0)}px ±${zone.depthTolerance}px` : '2D only'}>
+                                            {zone.depthTarget ? ' ◉' : ' ○'}
+                                        </span>
+                                    </div>
                                     <div className="zone-meta">{Math.round(zone.w * 100)}% × {Math.round(zone.h * 100)}% · {zone.items?.length ?? 0} items</div>
                                 </div>
-                                <button className="zone-remove" onClick={() => removeZone(zone.id)} title="Remove">✕</button>
+                                <div className="zone-actions">
+                                    <button
+                                        className="zone-depth-btn"
+                                        onClick={() => setDepthZoneId(zone.id)}
+                                        title={zone.depthTarget ? 'Recapture depth' : 'Set depth'}
+                                    >
+                                        {zone.depthTarget ? '↺' : '⊕'} Depth
+                                    </button>
+                                    {zone.depthTarget && (
+                                        <button
+                                            className="zone-depth-clear"
+                                            onClick={() => clearZoneDepth(zone.id)}
+                                            title="Clear depth (2D only)"
+                                        >✕</button>
+                                    )}
+                                    <button className="zone-remove" onClick={() => removeZone(zone.id)} title="Remove zone">🗑</button>
+                                </div>
                             </div>
                         ))}
                     </div>
                 )}
             </div>
         </div>
+
+        <ZoneDepthModal
+            open={!!depthZoneId}
+            zoneId={depthZoneId}
+            onClose={() => setDepthZoneId(null)}
+        />
+        </>
     )
 }
