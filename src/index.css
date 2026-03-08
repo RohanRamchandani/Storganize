@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700&display=swap');
 
 *,
 *::before,
@@ -9,50 +9,65 @@
 }
 
 :root {
-    --bg: #F8FAFC;
-    --surface: #FFFFFF;
-    --surface-2: #F1F5F9;
-    --border: rgba(17, 24, 39, 0.1);
-    --border-strong: rgba(17, 24, 39, 0.18);
-    --primary: #2563EB;
-    --primary-dim: rgba(37, 99, 235, 0.1);
-    --primary-hover: #1D4ED8;
-    --secondary: #14B8A6;
-    --secondary-dim: rgba(20, 184, 166, 0.1);
-    --accent: #F59E0B;
-    --accent-dim: rgba(245, 158, 11, 0.1);
-    --text: #111827;
-    --text-muted: #6B7280;
-    --text-subtle: #9CA3AF;
-    --success: #10B981;
-    --danger: #EF4444;
-    --grad: linear-gradient(135deg, #2563EB, #14B8A6);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.05);
-    --shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
-    --nav-h: 56px;
+    /* Apple-inspired palette */
+    --bg:             #F5F5F7;
+    --surface:        #FFFFFF;
+    --surface-2:      #F5F5F7;
+    --surface-3:      #E8E8ED;
+    --border:         rgba(0, 0, 0, 0.08);
+    --border-strong:  rgba(0, 0, 0, 0.14);
+
+    /* Single accent — Apple Blue */
+    --primary:        #0071E3;
+    --primary-hover:  #0077ED;
+    --primary-dim:    rgba(0, 113, 227, 0.08);
+    --primary-shadow: rgba(0, 113, 227, 0.22);
+
+    /* Typography */
+    --text:           #1D1D1F;
+    --text-secondary: #6E6E73;
+    --text-tertiary:  #AEAEB2;
+
+    /* Semantic */
+    --success:        #34C759;
+    --danger:         #FF3B30;
+    --warning:        #FF9F0A;
+
+    /* Elevation */
+    --shadow-xs:  0 1px 3px rgba(0,0,0,0.06);
+    --shadow-sm:  0 2px 8px rgba(0,0,0,0.07);
+    --shadow-md:  0 4px 20px rgba(0,0,0,0.08);
+    --shadow-lg:  0 12px 48px rgba(0,0,0,0.10);
+
+    /* Layout */
+    --nav-h: 52px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 22px;
+
+    /* Easing — Apple spring-like curve */
+    --ease: cubic-bezier(0.25, 0, 0, 1);
 }
 
 html,
 body,
 #root {
     height: 100%;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, 'SF Pro Display', BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
+/* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-    background: rgba(37, 99, 235, 0.25);
+    background: rgba(0,0,0,0.12);
     border-radius: 10px;
 }
 
@@ -62,82 +77,83 @@ body,
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    z-index: 10;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
 }
 
 .brand-icon {
-    width: 32px;
-    height: 32px;
-    background: var(--grad);
-    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    background: var(--text);
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    font-size: 13px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
 .brand-name {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
 }
 
 /* ── Tab bar ─────────────────────────────────── */
 .tab-bar {
     display: flex;
-    gap: 2px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 3px;
+    gap: 0;
+    align-items: center;
 }
 
 .tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 18px;
-    border-radius: 8px;
+    padding: 6px 16px;
     border: none;
     background: none;
-    color: var(--text-muted);
-    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    font-family: inherit;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.18s ease;
+    transition: color 0.18s var(--ease);
+    position: relative;
+    border-radius: 0;
+    letter-spacing: -0.1px;
 }
 
 .tab-btn:hover {
     color: var(--text);
-    background: rgba(37, 99, 235, 0.06);
 }
 
 .tab-btn.tab-active {
-    background: var(--primary-dim);
     color: var(--primary);
-    border: 1px solid rgba(37, 99, 235, 0.2);
     font-weight: 600;
 }
 
-.tab-icon {
-    font-size: 14px;
+/* Shared animated underline — JS sets left/width */
+.tab-indicator {
+    position: absolute;
+    bottom: -13px;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px 2px 0 0;
+    transition: left 0.28s cubic-bezier(0.25, 0, 0, 1), width 0.28s cubic-bezier(0.25, 0, 0, 1);
+    pointer-events: none;
 }
 
 /* ── Status pill ──────────────────────────────── */
@@ -147,24 +163,14 @@ body,
     gap: 6px;
     font-size: 12px;
     font-weight: 500;
-    color: var(--text-muted);
-    padding: 5px 13px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
+    color: var(--text-secondary);
 }
 
 .status-dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--success);
-    animation: pulse 2s ease infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.4; }
 }
 
 /* ── Panel layout ─────────────────────────────── */
@@ -172,15 +178,15 @@ body,
     height: calc(100vh - var(--nav-h));
     display: flex;
     align-items: stretch;
-    padding: 14px;
-    gap: 14px;
+    padding: 12px;
+    gap: 12px;
 }
 
 .panel {
     flex: 1;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -193,42 +199,45 @@ body,
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    color: var(--text-muted);
+    gap: 8px;
+    color: var(--text-secondary);
     user-select: none;
 }
 
 .empty-icon {
-    font-size: 40px;
-    opacity: 0.5;
+    font-size: 32px;
+    opacity: 0.35;
 }
 
 .empty-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text);
-    opacity: 0.4;
+    opacity: 0.3;
+    letter-spacing: -0.3px;
 }
 
 .empty-sub {
     font-size: 13px;
-    color: var(--text-subtle);
-    opacity: 0.7;
+    color: var(--text-tertiary);
 }
 
-/* ── Animations ───────────────────────────────── */
+/* ── Shared animations ────────────────────────── */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
 }
 
 .fade-in {
-    animation: fadeIn 0.2s ease forwards;
+    animation: fadeIn 0.22s var(--ease) forwards;
 }

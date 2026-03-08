@@ -919,21 +919,21 @@ export default function CameraPanel() {
                             value={searchText}
                             onChange={e => setSearchText(e.target.value)}
                         />
-                        <button className="search-submit" type="submit" disabled={!searchText.trim()}>🔍</button>
+                        <button className="search-submit" type="submit" disabled={!searchText.trim()}>→</button>
                     </form>
                     <button
                         className="cal-open-btn"
                         onClick={() => setShowCalModal(true)}
                         title={calibration ? `Calibrated ✓ (${calibration.farPalmSize.toFixed(0)}–${calibration.nearPalmSize.toFixed(0)}px)` : 'Calibrate depth'}
                     >
-                        {calibration ? '⊕ Recalibrate' : '⊕ Calibrate Depth'}
+                        {calibration ? 'Recalibrate' : 'Calibrate Depth'}
                     </button>
                     <button
                         id="scan-btn"
                         className={`scan-btn ${isScanning ? 'scan-btn-busy' : ''}`}
                         onClick={handleScan} disabled={!camReady || isScanning}
                     >
-                        {isScanning ? <><span className="mini-spinner" /> Scanning…</> : '📸 Scan Item'}
+                        {isScanning ? <><span className="mini-spinner" /> Scanning…</> : 'Scan'}
                     </button>
                     <button
                         className={`key-btn audio-test-btn-${audioTestStatus ?? 'idle'}`}
@@ -945,10 +945,10 @@ export default function CameraPanel() {
                         }}
                         title="Test ElevenLabs audio" disabled={audioTestStatus === 'testing'}
                     >
-                        {audioTestStatus === 'testing' ? <span className="mini-spinner" /> : audioTestStatus === 'ok' ? '🔊✓' : audioTestStatus === 'fail' ? '🔊✗' : '🔊'}
+                        {audioTestStatus === 'testing' ? <span className="mini-spinner" /> : audioTestStatus === 'ok' ? 'Sound ✓' : audioTestStatus === 'fail' ? 'Sound ✗' : 'Sound'}
                     </button>
                     <button id="api-key-btn" className="key-btn" onClick={() => setShowKeyInput(s => !s)} title={apiKey ? 'API key set ✓' : 'Set Gemini API key'}>
-                        {apiKey ? '🔑✓' : '🔑'}
+                        {apiKey ? 'Key ✓' : 'Key'}
                     </button>
                 </div>
             </div>

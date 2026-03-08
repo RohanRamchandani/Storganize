@@ -31,8 +31,10 @@ function drawScene(canvas, video, zones, drawing, cursorRect) {
 
     zones.forEach(zone => {
         const x = zone.x * W, y = zone.y * H, w = zone.w * W, h = zone.h * H
-        ctx.fillStyle = zone.color + '28'; ctx.fillRect(x, y, w, h)
-        ctx.strokeStyle = zone.color; ctx.lineWidth = 2; ctx.strokeRect(x, y, w, h)
+        const R = 10
+        ctx.fillStyle = zone.color + '28'; roundRect(ctx, x, y, w, h, R); ctx.fill()
+        ctx.strokeStyle = zone.color; ctx.lineWidth = 2
+        roundRect(ctx, x, y, w, h, R); ctx.stroke()
         const PAD = 6; ctx.font = '600 12px Inter,sans-serif'
         const tagW = ctx.measureText(zone.label).width + PAD * 2
         ctx.fillStyle = zone.color; roundRect(ctx, x + 4, y + 4, tagW, 22, 5); ctx.fill()
