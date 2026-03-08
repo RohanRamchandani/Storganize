@@ -27,13 +27,27 @@ export function ZonesProvider({ children }) {
             id: crypto.randomUUID(),
             color: ZONE_COLORS[prev.length % ZONE_COLORS.length],
             items: [],
+            depthTarget: null,
+            depthTolerance: 20,
         }])
     }
 
     const removeZone = (id) => setZones(prev => prev.filter(z => z.id !== id))
 
+    const setZoneDepth = (id, target, tolerance) =>
+        setZones(prev => prev.map(z => z.id === id
+            ? { ...z, depthTarget: target, depthTolerance: tolerance }
+            : z
+        ))
+
+    const clearZoneDepth = (id) =>
+        setZones(prev => prev.map(z => z.id === id
+            ? { ...z, depthTarget: null, depthTolerance: 20 }
+            : z
+        ))
+
     return (
-        <ZonesContext.Provider value={{ zones, addZone, removeZone }}>
+        <ZonesContext.Provider value={{ zones, addZone, removeZone, setZoneDepth, clearZoneDepth }}>
             {children}
         </ZonesContext.Provider>
     )

@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import { useZones } from '../context/ZonesContext'
+import { useItems } from '../context/ItemsContext'
+import ZoneDepthModal from './ZoneDepthModal'
 import './BoundariesPanel.css'
 
 function toNorm(rect, W, H) {
@@ -57,8 +59,10 @@ export default function BoundariesPanel() {
     const [rect, setRect] = useState(null)
     const [pending, setPending] = useState(null)
     const [labelText, setLabelText] = useState('')
+    const [depthZoneId, setDepthZoneId] = useState(null)
 
-    const { zones, addZone, removeZone } = useZones()
+    const { zones, addZone, removeZone, setZoneDepth, clearZoneDepth } = useZones()
+    const { items } = useItems()
 
     useEffect(() => {
         const loop = () => {
@@ -126,74 +130,103 @@ export default function BoundariesPanel() {
     const cancelPending = () => { setPending(null); setLabelText('') }
 
     return (
-        <div className="boundaries-root">
-            <video ref={videoRef} autoPlay muted playsInline style={{ display: 'none' }} />
-            <div className="boundaries-viewport">
-                {camError ? (
-                    <div className="cam-overlay center-col">
-                        <span style={{ fontSize: 36 }}>🚫</span>
-                        <p className="overlay-text">{camError}</p>
-                        <button className="retry-btn" onClick={startCamera}>Retry</button>
-                    </div>
-                ) : !camReady ? (
-                    <div className="cam-overlay center-col">
-                        <div className="spinner" />
-                        <p className="overlay-text" style={{ marginTop: 12 }}>Starting camera…</p>
-                    </div>
-                ) : null}
-
-                <canvas
-                    ref={canvasRef} id="boundaries-canvas" className="boundaries-canvas"
-                    width={1280} height={720}
-                    onMouseDown={onMouseDown} onMouseMove={onMouseMove}
-                    onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
-                    style={{ cursor: pending ? 'default' : 'crosshair' }}
-                />
-                {camReady && !pending && <div className="draw-hint">Click and drag to draw a zone</div>}
-                {pending && (
-                    <div className="label-dialog fade-in">
-                        <div className="label-dialog-title">Name this zone</div>
-                        <input
-                            id="zone-label-input" className="label-input"
-                            placeholder='e.g. "Shelf 1", "Bin A"'
-                            value={labelText} onChange={e => setLabelText(e.target.value)}
-                            onKeyDown={e => { if (e.key === 'Enter') confirmZone() }} autoFocus
-                        />
-                        <div className="label-dialog-actions">
-                            <button className="btn-cancel" onClick={cancelPending}>Cancel</button>
-                            <button id="confirm-zone-btn" className="btn-confirm" onClick={confirmZone} disabled={!labelText.trim()}>
-                                Save Zone
-                            </button>
+        <>
+            <div className="boundaries-root">
+                <video ref={videoRef} autoPlay muted playsInline style={{ display: 'none' }} />
+                <div className="boundaries-viewport">
+                    {camError ? (
+                        <div className="cam-overlay center-col">
+                            <span style={{ fontSize: 36 }}>🚫</span>
+                            <p className="overlay-text">{camError}</p>
+                            <button className="retry-btn" onClick={startCamera}>Retry</button>
                         </div>
+                    ) : !camReady ? (
+                        <div className="cam-overlay center-col">
+                            <div className="spinner" />
+                            <p className="overlay-text" style={{ marginTop: 12 }}>Starting camera…</p>
+                        </div>
+                    ) : null}
+
+                    <canvas
+                        ref={canvasRef} id="boundaries-canvas" className="boundaries-canvas"
+                        width={1280} height={720}
+                        onMouseDown={onMouseDown} onMouseMove={onMouseMove}
+                        onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
+                        style={{ cursor: pending ? 'default' : 'crosshair' }}
+                    />
+                    {camReady && !pending && <div className="draw-hint">Click and drag to draw a zone</div>}
+                    {pending && (
+                        <div className="label-dialog fade-in">
+                            <div className="label-dialog-title">Name this zone</div>
+                            <input
+                                id="zone-label-input" className="label-input"
+                                placeholder='e.g. "Shelf 1", "Bin A"'
+                                value={labelText} onChange={e => setLabelText(e.target.value)}
+                                onKeyDown={e => { if (e.key === 'Enter') confirmZone() }} autoFocus
+                            />
+                            <div className="label-dialog-actions">
+                                <button className="btn-cancel" onClick={cancelPending}>Cancel</button>
+                                <button id="confirm-zone-btn" className="btn-confirm" onClick={confirmZone} disabled={!labelText.trim()}>
+                                    Save Zone
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="zone-sidebar">
+                    <div className="sidebar-header">
+                        <span className="sidebar-title">Defined Zones</span>
+                        <span className="zone-count">{zones.length}</span>
                     </div>
-                )}
+                    {zones.length === 0 ? (
+                        <div className="zones-empty">
+                            <span style={{ fontSize: 28, opacity: 0.4 }}>🗂️</span>
+                            <p>No zones yet.<br />Draw on the camera to add one.</p>
+                        </div>
+                    ) : (
+                        <div className="zone-list">
+                            {zones.map(zone => (
+                                <div key={zone.id} className="zone-item">
+                                    <div className="zone-color-dot" style={{ background: zone.color }} />
+                                    <div className="zone-info">
+                                        <div className="zone-name">
+                                            {zone.label}
+                                            <span className="zone-depth-badge" title={zone.depthTarget ? `Depth: ${zone.depthTarget.toFixed(0)}px ±${zone.depthTolerance}px` : '2D only'}>
+                                                {zone.depthTarget ? ' ◉' : ' ○'}
+                                            </span>
+                                        </div>
+                                        <div className="zone-meta">{Math.round(zone.w * 100)}% × {Math.round(zone.h * 100)}% · {items.filter(i => i.zone === zone.id).length} items</div>
+                                    </div>
+                                    <div className="zone-actions">
+                                        <button
+                                            className="zone-depth-btn"
+                                            onClick={() => setDepthZoneId(zone.id)}
+                                            title={zone.depthTarget ? 'Recapture depth' : 'Set depth'}
+                                        >
+                                            {zone.depthTarget ? '↺' : '⊕'} Depth
+                                        </button>
+                                        {zone.depthTarget && (
+                                            <button
+                                                className="zone-depth-clear"
+                                                onClick={() => clearZoneDepth(zone.id)}
+                                                title="Clear depth (2D only)"
+                                            >✕</button>
+                                        )}
+                                        <button className="zone-remove" onClick={() => removeZone(zone.id)} title="Remove zone">🗑</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <div className="zone-sidebar">
-                <div className="sidebar-header">
-                    <span className="sidebar-title">Defined Zones</span>
-                    <span className="zone-count">{zones.length}</span>
-                </div>
-                {zones.length === 0 ? (
-                    <div className="zones-empty">
-                        <span style={{ fontSize: 28, opacity: 0.4 }}>🗂️</span>
-                        <p>No zones yet.<br />Draw on the camera to add one.</p>
-                    </div>
-                ) : (
-                    <div className="zone-list">
-                        {zones.map(zone => (
-                            <div key={zone.id} className="zone-item">
-                                <div className="zone-color-dot" style={{ background: zone.color }} />
-                                <div className="zone-info">
-                                    <div className="zone-name">{zone.label}</div>
-                                    <div className="zone-meta">{Math.round(zone.w * 100)}% × {Math.round(zone.h * 100)}% · {zone.items?.length ?? 0} items</div>
-                                </div>
-                                <button className="zone-remove" onClick={() => removeZone(zone.id)} title="Remove">✕</button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-        </div>
+            <ZoneDepthModal
+                open={!!depthZoneId}
+                zoneId={depthZoneId}
+                onClose={() => setDepthZoneId(null)}
+            />
+        </>
     )
 }

@@ -4,7 +4,7 @@
     width: 100%;
     overflow: hidden;
     border-radius: 14px;
-    background: #000;
+    background: #F8FAFC;
 }
 
 .boundaries-viewport {
@@ -25,7 +25,7 @@
 .cam-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(8, 11, 20, 0.82);
+    background: rgba(248, 250, 252, 0.88);
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -44,33 +44,38 @@
 
 .overlay-text {
     font-size: 13px;
-    color: #8892b0;
+    color: #6B7280;
 }
 
 .retry-btn {
     margin-top: 4px;
-    padding: 6px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 7px 20px;
+    border: 1px solid rgba(17, 24, 39, 0.15);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    color: #f0f2ff;
+    background: #FFFFFF;
+    color: #374151;
     font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: all 0.15s;
+}
+
+.retry-btn:hover {
+    background: #F1F5F9;
 }
 
 .spinner {
     width: 28px;
     height: 28px;
-    border: 2px solid rgba(124, 106, 247, 0.2);
-    border-top-color: #7c6af7;
+    border: 2px solid rgba(37, 99, 235, 0.15);
+    border-top-color: #2563EB;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 .draw-hint {
@@ -81,12 +86,14 @@
     padding: 6px 16px;
     border-radius: 20px;
     font-size: 12px;
-    color: #8892b0;
-    background: rgba(8, 11, 20, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 500;
+    color: #6B7280;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(17, 24, 39, 0.1);
     backdrop-filter: blur(10px);
     pointer-events: none;
     white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .label-dialog {
@@ -94,41 +101,44 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #0d1120;
-    border: 1px solid rgba(124, 106, 247, 0.35);
-    border-radius: 14px;
-    padding: 20px;
+    background: #FFFFFF;
+    border: 1px solid rgba(17, 24, 39, 0.12);
+    border-radius: 16px;
+    padding: 22px;
     min-width: 260px;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
     z-index: 20;
 }
 
 .label-dialog-title {
+    font-family: 'Poppins', sans-serif;
     font-size: 14px;
-    font-weight: 600;
-    color: #f0f2ff;
+    font-weight: 700;
+    color: #111827;
     margin-bottom: 12px;
 }
 
 .label-input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #F8FAFC;
+    border: 1px solid rgba(17, 24, 39, 0.14);
     border-radius: 8px;
-    color: #f0f2ff;
+    color: #111827;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     padding: 9px 12px;
     outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .label-input:focus {
-    border-color: rgba(124, 106, 247, 0.5);
-    box-shadow: 0 0 0 3px rgba(124, 106, 247, 0.1);
+    border-color: rgba(37, 99, 235, 0.45);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    background: #FFFFFF;
 }
 
 .label-input::placeholder {
-    color: #4a5568;
+    color: #9CA3AF;
 }
 
 .label-dialog-actions {
@@ -141,17 +151,19 @@
     flex: 1;
     padding: 8px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.04);
-    color: #8892b0;
+    border: 1px solid rgba(17, 24, 39, 0.12);
+    background: #F1F5F9;
+    color: #6B7280;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.15s;
 }
 
 .btn-cancel:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f0f2ff;
+    background: #E5E7EB;
+    color: #374151;
 }
 
 .btn-confirm {
@@ -159,12 +171,18 @@
     padding: 8px;
     border-radius: 8px;
     border: none;
-    background: linear-gradient(135deg, #7c6af7, #4fc3f7);
+    background: linear-gradient(135deg, #2563EB, #14B8A6);
     color: #fff;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: opacity 0.15s;
+}
+
+.btn-confirm:hover {
+    opacity: 0.9;
 }
 
 .btn-confirm:disabled {
@@ -172,11 +190,12 @@
     cursor: not-allowed;
 }
 
+/* ── Zone sidebar ─────────────────────────── */
 .zone-sidebar {
     width: 220px;
     min-width: 220px;
-    background: #0d1120;
-    border-left: 1px solid rgba(255, 255, 255, 0.07);
+    background: #FFFFFF;
+    border-left: 1px solid rgba(17, 24, 39, 0.08);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -187,7 +206,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(17, 24, 39, 0.08);
     flex-shrink: 0;
 }
 
@@ -196,17 +215,17 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #8892b0;
+    color: #6B7280;
 }
 
 .zone-count {
     font-size: 10px;
     font-weight: 700;
-    background: rgba(124, 106, 247, 0.15);
-    color: #7c6af7;
-    border: 1px solid rgba(124, 106, 247, 0.25);
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.2);
     border-radius: 20px;
-    padding: 1px 7px;
+    padding: 1px 8px;
 }
 
 .zones-empty {
@@ -218,7 +237,7 @@
     gap: 10px;
     text-align: center;
     padding: 20px;
-    color: #4a5568;
+    color: #9CA3AF;
     font-size: 12px;
     line-height: 1.5;
 }
@@ -237,9 +256,15 @@
     align-items: center;
     gap: 10px;
     padding: 9px 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #F8FAFC;
+    border: 1px solid rgba(17, 24, 39, 0.07);
     border-radius: 9px;
+    transition: background 0.15s, box-shadow 0.15s;
+}
+
+.zone-item:hover {
+    background: #FFFFFF;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .zone-color-dot {
@@ -257,7 +282,7 @@
 .zone-name {
     font-size: 12px;
     font-weight: 600;
-    color: #f0f2ff;
+    color: #111827;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -265,23 +290,24 @@
 
 .zone-meta {
     font-size: 10px;
-    color: #4a5568;
+    color: #9CA3AF;
     margin-top: 1px;
 }
 
 .zone-remove {
     background: none;
     border: none;
-    color: #4a5568;
+    color: #9CA3AF;
     cursor: pointer;
     font-size: 11px;
     padding: 2px 4px;
     border-radius: 4px;
+    transition: all 0.15s;
 }
 
 .zone-remove:hover {
-    color: #ff5757;
-    background: rgba(255, 87, 87, 0.1);
+    color: #DC2626;
+    background: rgba(239, 68, 68, 0.08);
 }
 
 @keyframes fadeIn {
@@ -289,7 +315,6 @@
         opacity: 0;
         transform: translate(-50%, -46%);
     }
-
     to {
         opacity: 1;
         transform: translate(-50%, -50%);
@@ -298,4 +323,53 @@
 
 .fade-in {
     animation: fadeIn 0.2s ease forwards;
+}
+
+/* ── Zone depth controls ──────────────────────────────────── */
+.zone-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.zone-depth-btn {
+    height: 26px;
+    padding: 0 8px;
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.28);
+    border-radius: 6px;
+    color: #0D9488;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.zone-depth-btn:hover {
+    background: rgba(20, 184, 166, 0.15);
+}
+
+.zone-depth-clear {
+    height: 26px;
+    width: 26px;
+    background: rgba(239, 68, 68, 0.07);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    color: #DC2626;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.zone-depth-clear:hover {
+    background: rgba(239, 68, 68, 0.14);
+}
+
+.zone-depth-badge {
+    font-size: 10px;
+    opacity: 0.7;
+    cursor: default;
 }
