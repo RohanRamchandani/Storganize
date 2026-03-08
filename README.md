@@ -6,6 +6,7 @@
 
 A fixed camera watches your storage area. Hold up an item — it identifies it.
 Place it in a zone — it logs where. Ask *"where's my blue toolbox?"* — it highlights the zone.
+The entire time a natural language voice model using ElevenLabs guides you through it.
 
 **No scanning. No typing. No barcodes.**
 
