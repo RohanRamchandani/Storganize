@@ -1,59 +1,214 @@
 /* ── Backdrop ── */
 .cal-backdrop {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(20px);
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(20px);
     display: flex; align-items: center; justify-content: center;
-    z-index: 200; padding: 20px; animation: fadeIn 0.2s;
+    z-index: 200; padding: 20px;
+    animation: cal-fade-in 0.2s ease;
+}
+
+@keyframes cal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cal-slide-up {
+    from { transform: translateY(28px) scale(0.96); opacity: 0; }
+    to   { transform: translateY(0)    scale(1);    opacity: 1; }
 }
 
 /* ── Card ── */
 .cal-card {
-    background: #1C1C1E; border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 24px; width: 420px; max-width: 100%;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
-    animation: slideUp 0.32s cubic-bezier(0.34,1.2,0.64,1);
-    overflow: hidden;
+    background: #1C1C1E;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 24px;
+    width: 440px; max-width: 100%;
+    padding: 28px 28px 24px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04);
+    animation: cal-slide-up 0.32s cubic-bezier(0.34,1.2,0.64,1);
+    display: flex; flex-direction: column; gap: 0;
 }
-@keyframes slideUp { from { transform: translateY(32px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* ── Header ── */
-.cal-header { padding: 22px 24px 0; text-align: center; }
-.cal-title { font-size: 19px; font-weight: 700; color: #F5F5F7; letter-spacing: -0.4px; }
-.cal-subtitle { font-size: 13px; color: #636366; margin-top: 4px; }
+/* ── Tag ── */
+.cal-tag {
+    display: inline-block; align-self: flex-start;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; color: #0A84FF;
+    background: rgba(10,132,255,0.12);
+    border: 1px solid rgba(10,132,255,0.22);
+    border-radius: 980px; padding: 3px 10px;
+    margin-bottom: 10px;
+}
 
-/* ── Steps ── */
-.cal-step-dots { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 16px 0 0; }
-.cal-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.12); transition: all 0.25s; }
-.cal-dot-active { background: #0A84FF; transform: scale(1.3); }
+/* ── Title & Sub ── */
+.cal-title {
+    font-size: 20px; font-weight: 700;
+    color: #F5F5F7; letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+.cal-sub {
+    font-size: 13px; color: #636366; line-height: 1.6;
+    margin-bottom: 22px;
+}
 
-/* ── Body ── */
-.cal-body { padding: 20px 24px 24px; }
-.cal-desc { font-size: 14px; color: #98989D; text-align: center; line-height: 1.7; margin-bottom: 18px; }
-.cal-instr { font-size: 13px; color: #F5F5F7; text-align: center; font-weight: 600; margin-bottom: 16px; }
+/* ── Step indicators ── */
+.cal-steps {
+    display: flex; align-items: center;
+    gap: 0; margin-bottom: 22px;
+}
 
-/* ── Result box ── */
-.cal-result-box {
-    background: rgba(10,132,255,0.06); border: 1px solid rgba(10,132,255,0.15);
-    border-radius: 12px; padding: 14px 18px; text-align: center; font-size: 13px;
-    color: #0A84FF; font-weight: 600; margin-bottom: 16px;
+.cal-dot {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.3);
+    transition: all 0.25s;
+}
+.cal-dot.active {
+    background: rgba(10,132,255,0.18);
+    border-color: rgba(10,132,255,0.5);
+    color: #0A84FF;
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.1);
+}
+.cal-dot.done {
+    background: rgba(48,209,88,0.15);
+    border-color: rgba(48,209,88,0.4);
+    color: #30D158;
+}
+
+.cal-line {
+    flex: 1; height: 2px;
+    background: rgba(255,255,255,0.08);
+    transition: background 0.3s;
+    margin: 0 4px;
+}
+.cal-line.done {
+    background: rgba(48,209,88,0.35);
+}
+
+/* ── Instruction box ── */
+.cal-instr-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 18px 20px;
+    margin-bottom: 16px;
+}
+.cal-instr-icon {
+    font-size: 28px; margin-bottom: 10px;
+}
+.cal-instr-title {
+    font-size: 14px; font-weight: 700;
+    color: #F5F5F7; letter-spacing: -0.2px;
+    margin-bottom: 6px;
+}
+.cal-instr-body {
+    font-size: 13px; color: #8E8E93; line-height: 1.65;
+}
+.cal-instr-body strong {
+    color: #F5F5F7; font-weight: 600;
+}
+
+/* ── Warning ── */
+.cal-warn {
+    font-size: 13px; font-weight: 600;
+    color: #FF9F0A; text-align: center;
+    background: rgba(255,159,10,0.1);
+    border: 1px solid rgba(255,159,10,0.2);
+    border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 14px;
+}
+
+/* ── Error ── */
+.cal-error {
+    font-size: 13px; font-weight: 600;
+    color: #FF453A; text-align: center;
+    background: rgba(255,69,58,0.1);
+    border: 1px solid rgba(255,69,58,0.2);
+    border-radius: 10px; padding: 12px 16px;
+    margin-bottom: 14px; line-height: 1.5;
+}
+
+/* ── Success ── */
+.cal-success {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 6px;
+    padding: 24px 20px;
+    background: rgba(48,209,88,0.07);
+    border: 1px solid rgba(48,209,88,0.18);
+    border-radius: 16px; margin-bottom: 16px;
+    text-align: center;
+}
+.cal-success-ico { font-size: 32px; }
+.cal-success p {
+    font-size: 15px; font-weight: 700;
+    color: #30D158; margin: 0;
+}
+.cal-success small {
+    font-size: 12px; color: #636366;
+}
+
+/* ── Progress bar ── */
+.cal-prog-wrap {
+    height: 36px; position: relative;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; overflow: hidden;
+    margin-bottom: 14px;
+}
+.cal-prog-fill {
+    position: absolute; top: 0; left: 0; bottom: 0;
+    background: linear-gradient(90deg, #0A84FF, #30D158);
+    transition: width 0.08s linear;
+    border-radius: 10px;
+}
+.cal-prog-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    color: #F5F5F7;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 /* ── Buttons ── */
-.cal-btn-row { display: flex; gap: 8px; margin-top: 4px; }
-.cal-btn-primary { flex: 1; height: 44px; border: none; border-radius: 12px; background: #0A84FF; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.12s; }
-.cal-btn-primary:hover { opacity: 0.88; }
-.cal-btn-primary:active { transform: scale(0.98); }
-.cal-btn-primary:disabled { opacity: 0.35; cursor: not-allowed; }
-.cal-btn-secondary { flex: 1; height: 44px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: transparent; color: #98989D; font-family: inherit; font-size: 14px; cursor: pointer; transition: background 0.15s; }
-.cal-btn-secondary:hover { background: rgba(255,255,255,0.07); }
-.cal-btn-danger { flex: 1; height: 44px; border: none; border-radius: 12px; background: rgba(255,69,58,0.12); border: 1px solid rgba(255,69,58,0.25); color: #FF453A; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
-.cal-btn-danger:hover { background: rgba(255,69,58,0.2); }
+.cal-btn {
+    display: block; width: 100%;
+    height: 46px; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.12s, box-shadow 0.15s;
+    margin-bottom: 10px;
+}
+.cal-btn:hover  { opacity: 0.88; }
+.cal-btn:active { transform: scale(0.98); }
 
-/* ── Live feedback ── */
-.cal-live { padding: 12px 16px; background: rgba(255,255,255,0.03); border-radius: 10px; margin-bottom: 14px; }
-.cal-live-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-.cal-live-label { color: #636366; }
-.cal-live-val   { color: #F5F5F7; font-weight: 600; font-variant-numeric: tabular-nums; }
-.cal-live-val-active { color: #0A84FF; }
+.cal-btn.amber {
+    background: linear-gradient(135deg, #FF9F0A, #FF6B00);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(255,159,10,0.3);
+}
+.cal-btn.amber:hover {
+    box-shadow: 0 6px 24px rgba(255,159,10,0.45);
+    opacity: 1;
+    filter: brightness(1.08);
+}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.cal-btn.green {
+    background: linear-gradient(135deg, #30D158, #188038);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(48,209,88,0.3);
+}
+.cal-btn.green:hover {
+    box-shadow: 0 6px 24px rgba(48,209,88,0.45);
+    opacity: 1;
+    filter: brightness(1.08);
+}
+
+/* ── Skip link ── */
+.cal-skip {
+    display: block; width: 100%;
+    background: transparent; border: none;
+    font-family: inherit; font-size: 13px;
+    color: #636366; cursor: pointer;
+    padding: 6px 0; text-align: center;
+    transition: color 0.15s;
+}
+.cal-skip:hover { color: #98989D; }
