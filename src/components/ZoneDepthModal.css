@@ -1,43 +1,248 @@
+/* ── Animations ── */
+@keyframes zdm-fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes zdm-slideUp { from { transform: translateY(32px) scale(0.95); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes zdm-pulse   { 0%, 100% { opacity: 1 } 50% { opacity: 0.5 } }
+
 /* ── Backdrop ── */
 .zdm-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center;
-    z-index: 200; padding: 20px; animation: fadeIn 0.2s;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; padding: 20px;
+    animation: zdm-fadeIn 0.2s ease;
 }
 
 /* ── Card ── */
 .zdm-card {
-    background: #1C1C1E; border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 22px; width: 380px; max-width: 100%;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.7);
-    animation: slideUp 0.3s cubic-bezier(0.34,1.2,0.64,1);
-    padding: 26px 26px 22px; display: flex; flex-direction: column; gap: 16px;
+    background: #1C1C1E;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    width: 420px; max-width: 100%;
+    box-shadow: 0 32px 96px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    animation: zdm-slideUp 0.32s cubic-bezier(0.34, 1.18, 0.64, 1);
+    padding: 24px 24px 20px;
+    display: flex; flex-direction: column; gap: 14px;
 }
-@keyframes slideUp { from { transform: translateY(28px) scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* ── Zone header ── */
-.zdm-zone-pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 14px; border-radius: 980px; font-size: 12px; font-weight: 700; width: fit-content; margin: 0 auto; }
+/* ── Tag / eyebrow ── */
+.zdm-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; color: #0A84FF;
+    text-align: center;
+}
 
-/* ── Typography ── */
-.zdm-title    { font-size: 17px; font-weight: 700; color: #F5F5F7; text-align: center; letter-spacing: -0.3px; }
-.zdm-desc     { font-size: 13px; color: #636366; text-align: center; line-height: 1.6; }
-.zdm-skip-row { font-size: 12px; color: #636366; text-align: center; }
+/* ── Title ── */
+.zdm-title {
+    font-size: 18px; font-weight: 700;
+    color: #F5F5F7; text-align: center;
+    letter-spacing: -0.4px; margin-top: -6px;
+}
+
+/* ── Sub / description ── */
+.zdm-sub {
+    font-size: 13px; color: rgba(255, 255, 255, 0.45);
+    text-align: center; line-height: 1.55;
+    margin-top: -4px;
+}
+
+/* ── Zone name pill ── */
+.zdm-zone-name {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 5px 16px; border-radius: 980px;
+    font-size: 12px; font-weight: 700;
+    border: 1px solid transparent;
+    width: fit-content; margin: 0 auto;
+    letter-spacing: 0.1px;
+}
+
+/* ── Depth Visualiser ── */
+.zdm-viz {
+    display: flex; flex-direction: column; gap: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.zdm-viz-labels {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+}
+
+.zdm-viz-labels span:nth-child(2) {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0; text-transform: none;
+}
+
+/* ── Track ── */
+.zdm-track {
+    position: relative;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    overflow: visible;
+}
+
+/* Tolerance range band */
+.zdm-range {
+    position: absolute;
+    top: 0; bottom: 0;
+    background: rgba(10, 132, 255, 0.18);
+    border: 1px solid rgba(10, 132, 255, 0.35);
+    border-radius: 12px;
+    pointer-events: none;
+    transition: left 0.12s, width 0.12s;
+}
+
+/* Target marker (captured depth) */
+.zdm-target {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px; height: 20px;
+    background: #0A84FF;
+    border-radius: 2px;
+    pointer-events: none;
+    box-shadow: 0 0 8px rgba(10, 132, 255, 0.7);
+}
+
+/* Live hand cursor */
+.zdm-cursor {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 2px 8px rgba(0,0,0,0.5);
+    transition: left 0.04s linear;
+    z-index: 2;
+}
+
+/* ── Visualiser footer (palm size values) ── */
+.zdm-viz-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; color: rgba(255, 255, 255, 0.22);
+    letter-spacing: 0.2px; margin-top: 2px;
+}
+
+.zdm-viz-foot span:nth-child(2) { color: rgba(255,255,255,0.18); }
+
+/* ── No calibration warning ── */
+.zdm-no-cal {
+    font-size: 12px; color: #FF9F0A;
+    background: rgba(255, 159, 10, 0.08);
+    border: 1px solid rgba(255, 159, 10, 0.2);
+    border-radius: 10px; padding: 10px 14px;
+    line-height: 1.5; text-align: center;
+}
+
+/* ── Tolerance section ── */
+.zdm-tol-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+    text-transform: uppercase; color: rgba(255, 255, 255, 0.3);
+    margin-bottom: -4px;
+}
+
+.zdm-tol-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 36px 40px;
+    align-items: center; gap: 8px;
+}
+
+.zdm-tol-side {
+    font-size: 10px; font-weight: 600;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.2px;
+}
+
+.zdm-tol-val {
+    font-size: 12px; font-weight: 700;
+    color: #0A84FF; text-align: right;
+    white-space: nowrap;
+}
 
 /* ── Slider ── */
-.zdm-slider-wrap { display: flex; flex-direction: column; gap: 6px; }
-.zdm-slider-label { display: flex; justify-content: space-between; font-size: 11px; color: #636366; }
-.zdm-slider-val   { color: #F5F5F7; font-weight: 600; }
 .zdm-slider {
-    width: 100%; height: 4px; accent-color: #0A84FF;
+    width: 100%; height: 4px;
+    accent-color: #0A84FF;
     -webkit-appearance: none; appearance: none;
-    border-radius: 2px; background: rgba(255,255,255,0.1); cursor: pointer;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    outline: none;
+}
+.zdm-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #0A84FF;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.25);
 }
 
-/* ── Buttons ── */
-.zdm-btn-row { display: flex; gap: 8px; }
-.zdm-confirm { flex: 1; height: 42px; border: none; border-radius: 11px; background: #0A84FF; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
-.zdm-confirm:hover { opacity: 0.88; }
-.zdm-skip-btn { height: 42px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 11px; background: transparent; color: #636366; font-family: inherit; font-size: 13px; cursor: pointer; transition: background 0.15s; }
-.zdm-skip-btn:hover { background: rgba(255,255,255,0.07); }
+/* ── Warning ── */
+.zdm-warn {
+    font-size: 12px; color: #FF453A;
+    background: rgba(255, 69, 58, 0.08);
+    border: 1px solid rgba(255, 69, 58, 0.2);
+    border-radius: 10px; padding: 9px 14px;
+    text-align: center;
+}
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* ── Sampling progress bar ── */
+.zdm-prog-wrap {
+    position: relative;
+    height: 34px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.zdm-prog-fill {
+    position: absolute; inset-y: 0; left: 0;
+    background: linear-gradient(90deg, rgba(10,132,255,0.4), rgba(10,132,255,0.6));
+    border-radius: 10px;
+    transition: width 0.08s linear;
+}
+
+.zdm-prog-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    animation: zdm-pulse 1s ease-in-out infinite;
+}
+
+/* ── Capture button ── */
+.zdm-btn {
+    width: 100%; height: 44px;
+    border: none; border-radius: 12px;
+    background: #0A84FF; color: #fff;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; letter-spacing: -0.1px;
+    transition: opacity 0.15s, transform 0.12s;
+    box-shadow: 0 4px 16px rgba(10, 132, 255, 0.35);
+}
+.zdm-btn:hover  { opacity: 0.9; transform: translateY(-1px); }
+.zdm-btn:active { opacity: 1;   transform: translateY(0); }
+
+/* ── Close button ── */
+.zdm-skip {
+    width: 100%; height: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: transparent; color: rgba(255, 255, 255, 0.35);
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    margin-top: -4px;
+}
+.zdm-skip:hover { background: rgba(255, 255, 255, 0.06); color: rgba(255,255,255,0.55); }

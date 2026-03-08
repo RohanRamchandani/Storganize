@@ -135,7 +135,7 @@ export default function BoundariesPanel() {
         <>
             <div className="boundaries-root">
                 <video ref={videoRef} autoPlay muted playsInline style={{ display: 'none' }} />
-                <div className="boundaries-viewport">
+                <div className="boundaries-canvas-wrap">
                     {camError ? (
                         <div className="cam-overlay center-col">
                             <span style={{ fontSize: 36 }}>🚫</span>
@@ -176,7 +176,7 @@ export default function BoundariesPanel() {
                     )}
                 </div>
 
-                <div className="zone-sidebar">
+                <div className="boundaries-sidebar">
                     <div className="sidebar-header">
                         <span className="sidebar-title">Defined Zones</span>
                         <span className="zone-count">{zones.length}</span>
