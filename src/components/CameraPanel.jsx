@@ -18,7 +18,7 @@ const PIXEL_W  = 96, PIXEL_H  = 72
 
 // ── ElevenLabs config ─────────────────────────────────────────
 const ELEVENLABS_API_KEY  = import.meta.env.VITE_ELEVENLABS_API_KEY || ''
-const ELEVENLABS_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'
+const ELEVENLABS_VOICE_ID = '21m00Tcm4TlvDq8ikWAM'   // Rachel — natural, clear English
 const ELEVENLABS_URL      = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`
 
 // ── Gemini config ──────────────────────────────────────────────
@@ -76,7 +76,16 @@ async function speakText(text) {
         const response = await fetch(ELEVENLABS_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'xi-api-key': ELEVENLABS_API_KEY },
-            body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2', voice_settings: { stability: 0.5, similarity_boost: 0.5 } }),
+            body: JSON.stringify({
+                text,
+                model_id: 'eleven_turbo_v2_5',   // faster + higher quality for English
+                voice_settings: {
+                    stability:        0.75,
+                    similarity_boost: 0.85,
+                    style:            0.20,
+                    use_speaker_boost: true,
+                },
+            }),
         })
         if (!response.ok) throw new Error(`ElevenLabs API error: ${response.statusText}`)
         const blob = await response.blob()
@@ -89,6 +98,27 @@ async function speakText(text) {
         console.error('TTS error:', err)
         speakBrowser(text)
     }
+}
+
+// ── Startup chime (Web Audio — no API call, instant) ──────────
+function playChime() {
+    try {
+        const ctx = getAudioCtx()
+        const now = ctx.currentTime
+        const notes = [523.25, 659.25, 783.99]   // C5 E5 G5 — pleasant major chord
+        notes.forEach((freq, i) => {
+            const osc  = ctx.createOscillator()
+            const gain = ctx.createGain()
+            osc.connect(gain); gain.connect(ctx.destination)
+            osc.type = 'sine'
+            osc.frequency.setValueAtTime(freq, now + i * 0.12)
+            gain.gain.setValueAtTime(0, now + i * 0.12)
+            gain.gain.linearRampToValueAtTime(0.18, now + i * 0.12 + 0.04)
+            gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.55)
+            osc.start(now + i * 0.12)
+            osc.stop(now + i * 0.12 + 0.6)
+        })
+    } catch { /* audio not unlocked yet — safe to ignore */ }
 }
 
 function frameDiffWithCentroid(a, b) {
@@ -414,13 +444,13 @@ export default function CameraPanel() {
             setDiffScore(Math.round(score))
 
             if (score > MOTION_THRESHOLD) {
-                lastMotion.current = Date.now()
+                lastMotion.current = Date.now()   // stamp NOW so countdown is always accurate
                 setMode(prev => {
                     if (prev === 'idle') {
                         stopPixelDraw()
                         clearInterval(intervalRef.current)
                         intervalRef.current = setInterval(checkMotion, ACTIVE_INTERVAL_MS)
-                        speakText('hey')
+                        playChime()
                     }
                     return 'active'
                 })
@@ -434,36 +464,39 @@ export default function CameraPanel() {
         if (mode !== 'active') {
             setCountdown(null); clearInterval(tickRef.current); startPixelDraw(); return
         }
+        // Stamp the enter-active time so the first tick is immediately correct
+        if (!lastMotion.current) lastMotion.current = Date.now()
         tickRef.current = setInterval(() => {
-            const remaining = IDLE_TIMEOUT_MS - (Date.now() - (lastMotion.current ?? Date.now()))
+            const elapsed   = Date.now() - lastMotion.current
+            const remaining = IDLE_TIMEOUT_MS - elapsed
             if (remaining <= 0) {
                 setMode('idle')
                 clearInterval(intervalRef.current)
                 intervalRef.current = setInterval(checkMotion, IDLE_INTERVAL_MS)
                 setCountdown(null); clearInterval(tickRef.current)
-            } else setCountdown(remaining)
-        }, 1000)
+            } else {
+                setCountdown(remaining)
+            }
+        }, 500)   // tick twice per second for smoother countdown display
         return () => clearInterval(tickRef.current)
     }, [mode, checkMotion, startPixelDraw])
 
     // ── Voice recognition ──────────────────────────────────────────
-    // We keep a ref to the recognition instance and control its lifecycle
-    // externally so we can start/stop it based on active vs idle mode.
     const recognitionRef    = useRef(null)
     const suppressVoiceRef  = useRef(false)
-    const voiceReadyRef     = useRef(false)  // true once mic permission granted
+    const voiceReadyRef     = useRef(false)
+    const modeRef           = useRef(mode)      // always up-to-date mode for closures
+    modeRef.current = mode
 
-    // Initialise permission + build the recognition object once on mount
+    // Initialise permission + recognition object once on mount
     useEffect(() => {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition
         if (!SR) { setVoiceStatus('unavailable'); return }
 
         async function init() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                stream.getTracks().forEach(t => t.stop())
-            } catch { setVoiceStatus('unavailable'); return }
-
+            // Don't pre-check getUserMedia — SpeechRecognition handles its own
+            // permission request. A failed getUserMedia would immediately set
+            // voiceStatus 'unavailable' even when the mic is accessible.
             const r = new SR()
             r.continuous = true
             r.interimResults = false
@@ -504,17 +537,29 @@ export default function CameraPanel() {
             }
             r.onerror = (e) => {
                 if (e.error === 'not-allowed') { setVoiceStatus('unavailable'); suppressVoiceRef.current = true }
+                // Other transient errors (network, aborted) — let onend handle restart
             }
-            // Auto-restart only while in active mode
             r.onend = () => {
-                if (!suppressVoiceRef.current && recognitionRef.current === r) {
-                    // Will be restarted by the mode effect if still active
+                if (suppressVoiceRef.current || recognitionRef.current !== r) return
+                if (modeRef.current === 'active') {
+                    // Auto-restart: recognition ends after each segment in continuous mode
+                    setTimeout(() => {
+                        if (suppressVoiceRef.current || modeRef.current !== 'active') return
+                        try { r.start() } catch {}
+                    }, 100)
+                } else {
                     setVoiceStatus('idle')
                 }
             }
 
             recognitionRef.current = r
             voiceReadyRef.current  = true
+
+            // If mode is already active (async init completed after first motion),
+            // start immediately — the mode effect already ran and found voiceReadyRef false.
+            if (modeRef.current === 'active') {
+                try { r.start() } catch {}
+            }
         }
 
         init()
@@ -527,15 +572,15 @@ export default function CameraPanel() {
 
     // ── Tie voice lifecycle to active / idle mode ──────────────────
     useEffect(() => {
+        // voiceReadyRef may be false during async init — that case is handled
+        // by init() itself once it completes (see above).
         if (!voiceReadyRef.current || suppressVoiceRef.current) return
         const r = recognitionRef.current
         if (!r) return
 
         if (mode === 'active') {
-            // Fresh start — clears any buffered audio from idle period
-            try { r.start() } catch {}
+            try { r.start() } catch {} // throws if already started — harmless
         } else {
-            // Stop and drain the buffer
             try { r.stop() } catch {}
             setVoiceStatus('idle')
         }
