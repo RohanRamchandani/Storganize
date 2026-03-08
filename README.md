@@ -1,451 +1,151 @@
 <div align="center">
 
-# 📦 Stifficiency
+# Storganize
 
-### ✨ AI-Powered, Hands-Free Inventory Management ✨
+### AI-Powered, Hands-Free Inventory Management
 
-<br/>
+A fixed camera watches your storage area. Hold up an item — it identifies it.
+Place it in a zone — it logs where. Ask *"where's my blue toolbox?"* — it highlights the zone.
 
-> **Wave. 👋 Show. 📸 Place. 📍 Done. ✅**
-
-<br/>
-
-A fixed camera watches your storage area. Hold up an item — it identifies it.\
-Place it on a shelf — it logs where. Ask *"where's my blue toolbox?"* — it highlights the shelf.
-
-**No scanning. No typing. No barcodes.**\
-Just your voice, your hands, and a camera.
+**No scanning. No typing. No barcodes.**
 
 <br/>
 
 [![React](https://img.shields.io/badge/React_18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
-[![Vite](https://img.shields.io/badge/Vite_5-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
-[![Gemini](https://img.shields.io/badge/Gemini_Vision-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
+[![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Gemini](https://img.shields.io/badge/Gemini_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
 [![ElevenLabs](https://img.shields.io/badge/ElevenLabs-000000?style=for-the-badge&logo=elevenlabs&logoColor=white)](https://elevenlabs.io)
-
-<br/>
-
-<!-- Add a demo GIF or screenshot here -->
-<!-- ![Demo](assets/demo.gif) -->
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-FF6F00?style=for-the-badge&logo=google&logoColor=white)](https://mediapipe.dev)
 
 </div>
 
 ---
 
-<br/>
+## The Problem
 
-## 😤 The Problem
-
-Every warehouse, office, school, and small business has the same headache:
+Every warehouse, workshop, and small business has the same headache:
 
 > *"Where did that thing go?"*
 
-Someone puts a toolbox on Shelf 3, forgets to log it, and three days later the entire team is opening every drawer and checking every bin. Sound familiar? 😅
-
-Sure, barcode systems exist — but they need labels on *everything*, dedicated scanners, and someone who actually remembers to scan every single time. For most small teams, the reality is: **nobody does it consistently**.
-
-The result? Lost items, wasted time, and a lot of frustration. 😩
-
-<br/>
+Barcode systems exist — but they require labels on everything, dedicated scanners, and someone who actually remembers to scan every time. For most small teams, the reality is that nobody does it consistently.
 
 ---
 
-<br/>
+## How It Works
 
-## 💡 The Solution
+### Step 1 — Define Your Zones (One Time)
 
-Stifficiency throws out the barcode scanner and replaces the entire workflow with something radically simpler:
+Open Storganize and draw rectangles directly onto the live camera feed around each storage area — a shelf, a drawer, a bin. Name each zone. Zones are saved persistently and overlaid on the feed from that point on.
 
-> **🎥 One fixed camera + 🧠 AI + 🗣️ Your voice = Inventory that manages itself**
+### Step 2 — Add an Item
 
-You walk up. Hold the item to the camera. Place it where it goes. That's it — the system identifies it, logs it, and remembers where it is. When you need to find something later, just *ask*.
+Move in front of the camera. The system detects motion and wakes up automatically using a **pixel-difference motion gate** — it compares each frame against the last to detect when something is happening, then activates without any button press.
 
-<br/>
-
-### 🔑 The Key Insight — We Don't Waste AI Calls
-
-Most camera-to-AI systems stream every frame and burn through API credits in minutes. **We don't do that.**
-
-We built a **quality gate** that evaluates every frame *locally* using cheap Canvas API checks:
-
-| Check | What It Does | Cost |
-|:---:|:---|:---:|
-| 🌀 **Blur Detection** | Is the item being held still? | Free |
-| 🔲 **Edge Analysis** | Is the item fully in frame? | Free |
-| 💡 **Brightness Check** | Is the lighting good enough? | Free |
-
-Only when a frame passes **all three checks** does it get sent to Gemini Vision. The result?
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  Frames evaluated: 847  │  Sent to AI: 4  │  Tokens: 312  │
-└─────────────────────────────────────────────────────────┘
-```
-
-> 🎯 Out of **hundreds** of frames, typically only **3–6 ever hit the API**.\
-> Fast. Cheap. Demo-ready.
-
-<br/>
-
----
-
-<br/>
-
-## 🔄 How It Works
-
-<br/>
-
-### 🛠️ Step 1 — Setup (One Time Only)
-
-> *"Hey camera, here's what you're looking at."*
-
-1. Open Stifficiency — your live camera feed appears 🎥
-2. **Draw rectangles** directly on the video around each storage area
-3. Name each zone → *"Shelf 1"*, *"Tool Bin"*, *"Top Drawer"*
-4. Pick a type → 🗄️ Shelf · 🗃️ Drawer · 📦 Bin · 🏗️ Rack
-5. Click **Done** — zones are saved and permanently overlaid on the feed
-
-That's it. You never do this again unless you rearrange your storage. ✅
-
-<br/>
-
-### ➕ Step 2 — Add an Item
-
-> *"Here's a blue toolbox. I'm putting it on Shelf 1."*
-
-1. 👋 **Wave at the camera** → system wakes up (Presage gesture detection)
-2. 🖐️ **Hold up the item** — a water bottle, a toolbox, a jacket, anything
-3. 🧠 **Quality gate watches** every frame, rejecting blurry/dark/cut-off ones
-4. 📸 **One clean frame captured** → sent to Gemini Vision
-5. 🤖 **Gemini returns:**
+Say **"scan"** (or click the Scan button). Storganize captures a frame and sends it to **Gemini Vision**, which returns:
 
 ```json
 {
   "name": "toolbox",
+  "category": "Tools",
   "item_type": "toolbox",
   "distinguishing_features": {
     "color": "blue",
     "brand": "DeWalt",
-    "size": "large",
-    "condition": "good"
-  },
-  "confidence": 92
+    "size": "large"
+  }
 }
 ```
 
-6. 🚶 **Walk to a zone & place the item** — system tracks which zone you're at
-7. ✅ **Confirmation appears:**
+Hold your hand over the target zone. **MediaPipe** tracks your hand in real time. A dwell ring fills as you hold position — once it completes, the item is logged to that zone automatically.
 
-> *"Blue DeWalt toolbox → Shelf 1 ✓"* (auto-dismisses in 3s)
+> The system also uses **depth calibration** — your palm size on screen is a reliable proxy for distance. After a quick two-step calibration (near/far), zones can require the correct depth before confirming a placement, preventing accidental assignments.
 
-> 🔊 Or if voice mode is on, ElevenLabs speaks the confirmation and waits for your *"yes"* or *"no"*
+### Step 3 — Find an Item
 
-<br/>
+Say **"find blue toolbox"**, **"where is the screwdriver"**, or **"what's in Shelf 1"**. The matching zone glows on the camera feed, the inventory panel scrolls to the item card, and **ElevenLabs** speaks the location aloud.
 
-### 🔍 Step 3 — Find an Item
+### Step 4 — Remove an Item
 
-> *"Where's the blue toolbox?"*
-
-1. 🗣️ Ask out loud or type your question
-2. 🔎 System queries the database by name + features
-3. ✨ **The matching zone GLOWS** on the camera feed
-4. 📋 Inventory panel scrolls to the matching item card
-5. 🔊 ElevenLabs: *"The blue toolbox is on Shelf 1"*
-
-<br/>
-
-### 🗑️ Step 4 — Remove an Item
-
-> *"I'm taking this back."*
-
-1. 👋 Wake the system
-2. 🖐️ Hold the item up → quality gate → Gemini identifies it
-3. 🔄 System matches it against the database
-4. ✅ Confirm removal → item marked as **out**
-5. 📊 Zone count updates in real time
-
-<br/>
+Say **"remove toolbox"**. The system finds the best match in inventory, reads back what it found, and waits for you to say **"confirm"** or **"cancel"**.
 
 ---
 
-<br/>
+## Tech Stack
 
-## ⚡ Tech Stack
-
-<table>
-<tr>
-<td align="center" width="150">
-
-**🖥️ Frontend**
-
-React 18\
-+ Vite 5
-</td>
-<td align="center" width="150">
-
-**⚙️ Backend**
-
-Node.js\
-+ Express
-</td>
-<td align="center" width="150">
-
-**🗄️ Database**
-
-Supabase\
-(PostgreSQL)
-</td>
-<td align="center" width="150">
-
-**👁️ Vision AI**
-
-Gemini\
-Vision API
-</td>
-</tr>
-<tr>
-<td align="center">
-
-**🔊 Voice Out**
-
-ElevenLabs\
-REST API
-</td>
-<td align="center">
-
-**🎤 Voice In**
-
-Web Speech\
-API
-</td>
-<td align="center">
-
-**👋 Gesture**
-
-Presage\
-SDK
-</td>
-<td align="center">
-
-**🧑‍💻 Tracking**
-
-MediaPipe\
-+ Canvas API
-</td>
-</tr>
-</table>
-
-<br/>
-
-| Layer | Technology | Why We Chose It |
-|:---|:---|:---|
-| 🖥️ Frontend | **React 18 + Vite** | Blazing fast HMR, perfect for canvas & camera work |
-| ⚙️ Backend | **Node.js + Express** | Same language as frontend, minimal boilerplate |
-| 🗄️ Database | **Supabase** | Instant REST API, real-time subscriptions, free tier |
-| 👁️ Vision | **Gemini Vision API** | Multimodal, structured JSON output, function calling |
-| 🔊 Voice Out | **ElevenLabs** | Simple POST → audio, natural sounding speech |
-| 🎤 Voice In | **Web Speech API** | Browser-native, zero setup, no API key needed |
-| 👋 Gesture | **Presage SDK** | Plug-and-play wave detection via webcam |
-| 🏃 Tracking | **MediaPipe** | Runs in-browser, no backend needed |
-| 🖼️ Frame Analysis | **Canvas API** | Vanilla JS — no library, no cost, no latency |
-
-<br/>
+| Layer | Technology | Role |
+|---|---|---|
+| Frontend | React 18 + Vite 6 | Component UI, fast HMR, canvas/camera work |
+| Vision AI | Gemini 2.5 Flash | Item identification from quality-gated frames |
+| Hand Tracking | MediaPipe Hands | In-browser hand detection, no server needed |
+| Voice Output | ElevenLabs | Natural-sounding speech feedback |
+| Voice Input | Web Speech API | Browser-native, no API key required |
+| Frame Analysis | Canvas API | Motion detection and frame capture |
+| Data | LocalStorage | Client-side persistence for zones and inventory |
 
 ---
 
-<br/>
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-stifficiency/
+src/
+├── components/
+│   ├── CameraPanel.jsx       Live feed, motion detection, Gemini scan, voice commands
+│   ├── BoundariesPanel.jsx   Zone drawing tool, depth calibration per zone
+│   ├── InventoryPanel.jsx    Item list, search, zone filter, removed items
+│   ├── CalibrationModal.jsx  Two-step near/far depth calibration UI
+│   └── ZoneDepthModal.jsx    Per-zone depth target assignment
 │
-├── 🖥️ frontend/                  React + Vite
-│   └── src/
-│       ├── components/
-│       │   ├── 📹 camera/        Live feed, zone overlays, token counter
-│       │   ├── 🛠️ setup/         Zone drawing, name/type forms
-│       │   ├── 📋 inventory/     Item list, search, location browser
-│       │   ├── ⚙️ settings/      Config-driven settings panel
-│       │   └── 🧩 shared/        ConfirmationDialog, StatusBadge
-│       ├── 🪝 hooks/             useCamera, useSpeech, usePresage
-│       ├── 🌐 context/           Settings, Inventory, Session
-│       └── 🔧 utils/             frameDiff, frameQuality, zoneMapper
+├── context/
+│   ├── ZonesContext.jsx      Zone CRUD + depth settings (localStorage)
+│   ├── ItemsContext.jsx      Item CRUD + soft-remove (localStorage)
+│   ├── DepthContext.jsx      MediaPipe lifecycle + calibration state
+│   └── SearchContext.jsx     Cross-panel find highlighting and zone filter
 │
-├── ⚙️ backend/                   Node.js + Express
-│   ├── routes/                   /api/items, /api/zones, /api/events
-│   ├── controllers/              Request/response handling
-│   ├── services/                 Supabase queries + business logic
-│   └── db/schema/                SQL table definitions
-│
-├── 🧠 ai/                        Pure functions, no side effects
-│   ├── 👁️ vision/                Gemini Vision integration
-│   ├── 🔊 voice/                 ElevenLabs + Web Speech
-│   ├── 👋 gesture/               Presage wake detection
-│   └── 📝 prompts/               Modular prompt templates
-│
-└── 📚 docs/                      API contract, demo script
+└── lib/
+    ├── handTracker.js        MediaPipe Hands wrapper with grace period logic
+    ├── zoneTracker.js        Dwell timer + 2D/depth zone matching
+    └── depthCalibration.js   Palm-size math, calibration build/validate, persistence
 ```
-
-<br/>
 
 ---
 
-<br/>
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-| Requirement | Link |
-|:---|:---|
-| 📦 Node.js 18+ | [nodejs.org](https://nodejs.org) |
-| 🗄️ Supabase account | [supabase.com](https://supabase.com) (free tier works!) |
-| 🔑 Gemini API key | [ai.google.dev](https://ai.google.dev) |
-| 🔑 ElevenLabs API key | [elevenlabs.io](https://elevenlabs.io) |
-| 🌐 Chrome browser | Required for Web Speech API |
+- Node.js 18+
+- Chrome (required for Web Speech API)
+- A [Gemini API key](https://ai.google.dev)
+- An [ElevenLabs API key](https://elevenlabs.io) (optional — falls back to browser TTS)
 
-### ⚡ Quick Start
+### Quick Start
 
 ```bash
-# 1️⃣ Clone it
-git clone https://github.com/your-username/stifficiency.git
-cd stifficiency
-
-# 2️⃣ Set up the database
-#    → Go to Supabase → SQL Editor → paste backend/db/schema/001_initial.sql → Run
-
-# 3️⃣ Start the backend
-cd backend
-cp .env.example .env          # ← Add your Supabase keys here
+git clone https://github.com/your-username/storganize.git
+cd storganize
 npm install
-npm run dev                    # → http://localhost:3001
-
-# 4️⃣ Start the frontend
-cd ../frontend
-cp .env.example .env
-npm install
-npm run dev                    # → http://localhost:5173
+npm run dev
+# Open http://localhost:5173 in Chrome
 ```
 
-### 🎬 First Run
+On first run:
+1. Allow camera and microphone access when prompted
+2. Go to the **Define Boundaries** tab and draw zones on the camera feed
+3. (Optional) Click **Calibrate Depth** to enable depth-gated placement
+4. Switch to the **Camera** tab and start scanning
 
-1. 🎥 Allow camera access when prompted
-2. ✏️ Click **"Draw Zone"** → drag rectangles on the camera feed
-3. 📝 Name each zone, pick a type
-4. ✅ Click **"Done"** — you're all set!
+### API Keys
 
-<br/>
-
----
-
-<br/>
-
-## 🏗️ Architecture Decisions
-
-<details>
-<summary>🤔 <b>Why a quality gate instead of continuous streaming?</b></summary>
-<br/>
-
-💰 **Cost and speed.** Gemini Vision charges per call. Streaming at 30fps would burn through API credits in under a minute. Our quality gate evaluates frames locally for free, and only sends the 1-in-200 frame that will actually produce a good result. Typical session: **847 frames evaluated, 4 sent to AI**.
-
-</details>
-
-<details>
-<summary>🤔 <b>Why normalized coordinates (0–1) for zones?</b></summary>
-<br/>
-
-📐 **Resolution independence.** Browser windows resize. Camera resolutions differ between devices. By normalizing all zone coordinates to 0–1 at draw time and re-scaling to pixels at render time, zones always align perfectly — on any screen, any device.
-
-</details>
-
-<details>
-<summary>🤔 <b>Why Supabase?</b></summary>
-<br/>
-
-⚡ **Speed to ship.** Instant PostgreSQL with REST API + real-time subscriptions (inventory panel updates live when items are logged) + generous free tier. For a 48-hour hackathon, it eliminates 100% of database infrastructure work.
-
-</details>
-
-<details>
-<summary>🤔 <b>Why are all AI modules pure functions?</b></summary>
-<br/>
-
-🧪 **Testability and parallelism.** Every file in `/ai/` exports pure functions — no Express, no React, no side effects. Independently testable, reusable on both frontend and backend, and safe for four people to develop in parallel.
-
-</details>
-
-<br/>
+The Gemini key can be set in two ways:
+- Add `VITE_GEMINI_API_KEY=your_key` to a `.env` file at the root
+- Enter it directly in the Camera panel UI — it is saved to LocalStorage
 
 ---
 
-<br/>
+## Architecture Notes
 
-## ⚙️ Settings
+**Quality-gated scanning** — The system does not stream frames to Gemini continuously. It detects motion locally using a pixel-diff check, evaluates frame quality (brightness, blur, edge content) for free using the Canvas API, and only sends a frame to Gemini when all checks pass. A typical session sends 3–6 frames to the API out of hundreds evaluated.
 
-Stifficiency includes a **config-driven settings panel** — adding a new setting requires zero UI code changes. Just add one object to `settingsConfig.js`. 🔧
+**Normalized zone coordinates** — All zone bounds are stored as 0–1 values relative to the video dimensions. This ensures zones align correctly regardless of window size or camera resolution.
 
-| Setting | Default | Options |
-|:---|:---|:---|
-| 🔔 Wake trigger | Gesture | 👋 gesture / 🎤 voice |
-| 🎯 Confidence threshold | 80% | 0–100 slider |
-| ✅ High confidence mode | UI only | 🖥️ ui-only / 🔊 voice |
-| ⚠️ Low confidence mode | Voice | 🖥️ ui-only / 🔊 voice |
-| 🔊 Voice enabled | On | toggle |
-| 🌀 Motion threshold | 15% | 0–100 slider |
-| ⏱️ AI cooldown | 3000ms | 1000–10000 slider |
-| 🤖 Agent mode | Warehouse | 🏭 warehouse / 🏫 school / 🏢 office |
-
-<br/>
-
----
-
-<br/>
-
-## 🏆 Hackathon Prizes Targeted
-
-| Prize | How We Use It |
-|:---|:---|
-| 🥇 **MLH Best Use of Gemini API** | Core item identification from quality-gated camera frames |
-| 🥇 **MLH Best Hack with Google Antigravity** | Built using Antigravity IDE, fully documented |
-| 🥇 **MLH Best Use of Presage** | Wave-to-wake gesture activates the entire system |
-| 🥇 **Stan — Build in Public** | 3+ LinkedIn posts documenting the journey via Stanley |
-
-<br/>
-
----
-
-<br/>
-
-## 👥 The Team
-
-| Role | Owns | Key Deliverables |
-|:---|:---|:---|
-| 🎥 **Person 1** | Camera + Vision | Frame quality gate, Gemini integration, zone tracking, token counter |
-| 🗣️ **Person 2** | Voice + Gesture | ElevenLabs, Web Speech, Presage, prompt templates |
-| ⚙️ **Person 3** | Backend | Supabase schema, all API routes, services, held_items logic |
-| 🎨 **Person 4** | Frontend UI | Setup flow, inventory panel, settings, confirmation dialog |
-
-<br/>
-
----
-
-
----
-
-<br/>
-
-<div align="center">
-
-### Built it in 48 hours
-
-### Powered by ☕ caffeine and 🤖 Gemini
-
-<br/>
-
-*Wave at it. It waves back.* 👋
-
-</div>
-
+**Depth inference without a depth camera** — Palm size on screen scales predictably with distance. By calibrating near and far positions once, the system can infer whether a hand is at the right depth for a given zone — enabling precise placement even when multiple zones overlap in 2D.
