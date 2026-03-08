@@ -7,17 +7,17 @@ const SAMPLE_DURATION_MS = 1200
 const SAMPLE_INTERVAL_MS = 80
 
 /**
- * Two-step global depth calibration modal.
- * Step 1: capture near palm size (hand close — scanning distance)
- * Step 2: capture far palm size (hand at furthest shelf)
+ * Two-step global depth calibration.
+ * hud=true  → renders as a bottom-anchored HUD bar (no backdrop, camera stays visible)
+ * hud=false → renders as a centered modal overlay (default, used in onboarding)
  */
-export default function CalibrationModal({ open, onClose }) {
+export default function CalibrationModal({ open, onClose, hud = false }) {
     const { handStateRef, setCalibration } = useDepth()
 
-    const [phase, setPhase]   = useState('near')  // 'near' | 'far' | 'error' | 'done'
-    const [nearVal, setNearVal] = useState(null)
-    const [farVal,  setFarVal]  = useState(null)
-    const [pct, setPct]         = useState(0)
+    const [phase, setPhase]       = useState('near')
+    const [nearVal, setNearVal]   = useState(null)
+    const [farVal,  setFarVal]    = useState(null)
+    const [pct, setPct]           = useState(0)
     const [sampling, setSampling] = useState(false)
     const [warn, setWarn]         = useState(false)
     const [errMsg, setErrMsg]     = useState('')
@@ -59,17 +59,13 @@ export default function CalibrationModal({ open, onClose }) {
                 setSampling(false)
                 setPct(0)
 
-                if (samples.length < 3) {
-                    setWarn(true)
-                    return
-                }
+                if (samples.length < 3) { setWarn(true); return }
 
                 const result = median(samples)
                 if (phase === 'near') {
                     setNearVal(result)
                     setPhase('far')
                 } else {
-                    // Validate
                     const cal = buildCalibration(nearVal, result)
                     const { valid, reason } = validateCalibration(cal)
                     if (!valid) {
@@ -87,10 +83,69 @@ export default function CalibrationModal({ open, onClose }) {
         }, SAMPLE_INTERVAL_MS)
     }, [phase, nearVal, handStateRef, setCalibration])
 
-    const skip = () => { handleClose() }
-
     if (!open) return null
 
+    /* ── HUD variant ── */
+    if (hud) {
+        return (
+            <div className="cal-hud">
+                {/* Left: step progress + instruction */}
+                <div className="cal-hud-info">
+                    <div className="cal-hud-steps">
+                        <div className={`cal-dot ${phase === 'near' ? 'active' : nearVal ? 'done' : ''}`}>1</div>
+                        <div className={`cal-line ${nearVal ? 'done' : ''}`} />
+                        <div className={`cal-dot ${phase === 'far' ? 'active' : farVal ? 'done' : ''}`}>2</div>
+                        <div className={`cal-line ${farVal ? 'done' : ''}`} />
+                        <div className={`cal-dot ${phase === 'done' ? 'done' : ''}`}>✓</div>
+                    </div>
+                    <div className="cal-hud-text">
+                        {phase === 'near' && (
+                            <>
+                                <div className="cal-hud-step-label">Step 1 — Scanning Distance</div>
+                                <div className="cal-hud-desc">Hold your hand close to the camera — exactly where you scan an item to place it.</div>
+                            </>
+                        )}
+                        {phase === 'far' && (
+                            <>
+                                <div className="cal-hud-step-label">Step 2 — Furthest Placement Distance</div>
+                                <div className="cal-hud-desc">Reach to your furthest shelf or zone and keep your hand steady.</div>
+                            </>
+                        )}
+                        {phase === 'error' && (
+                            <div className="cal-hud-error">{errMsg}</div>
+                        )}
+                        {phase === 'done' && (
+                            <div className="cal-hud-done">✅ Depth calibrated — {summary}</div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right: warnings + progress + actions */}
+                <div className="cal-hud-actions">
+                    {warn && <div className="cal-hud-warn">✋ No hand detected</div>}
+                    {sampling && <ProgressBar pct={pct} compact />}
+                    {!sampling && (phase === 'near' || phase === 'far') && (
+                        <button className="cal-btn amber" onClick={capture}>
+                            📸 {phase === 'near' ? 'Capture Close' : 'Capture Far'}
+                        </button>
+                    )}
+                    {!sampling && phase === 'error' && (
+                        <button className="cal-btn amber" onClick={reset}>↺ Try Again</button>
+                    )}
+                    {phase === 'done' && (
+                        <button className="cal-btn green" onClick={handleClose}>Continue →</button>
+                    )}
+                    {phase !== 'done' && (
+                        <button className="cal-skip" onClick={handleClose}>
+                            {phase === 'near' ? 'Skip (2D only)' : '✕ Close'}
+                        </button>
+                    )}
+                </div>
+            </div>
+        )
+    }
+
+    /* ── Modal variant (used in onboarding) ── */
     return (
         <div className="cal-backdrop" onClick={e => e.target === e.currentTarget && handleClose()}>
             <div className="cal-card">
@@ -100,7 +155,6 @@ export default function CalibrationModal({ open, onClose }) {
                     Sets the palm-size scale for your room. Required before per-zone depth targeting works.
                 </div>
 
-                {/* Step indicators */}
                 <div className="cal-steps">
                     <div className={`cal-dot ${phase === 'near' ? 'active' : nearVal ? 'done' : ''}`}>1</div>
                     <div className={`cal-line ${nearVal ? 'done' : ''}`} />
@@ -109,7 +163,6 @@ export default function CalibrationModal({ open, onClose }) {
                     <div className={`cal-dot ${phase === 'done' ? 'done' : ''}`}>✓</div>
                 </div>
 
-                {/* Content */}
                 {phase === 'near' && (
                     <>
                         <div className="cal-instr-box">
@@ -121,10 +174,8 @@ export default function CalibrationModal({ open, onClose }) {
                         </div>
                         {warn && <div className="cal-warn">✋ No hand detected — make sure your hand is visible.</div>}
                         {sampling && <ProgressBar pct={pct} />}
-                        {!sampling && (
-                            <button className="cal-btn amber" onClick={capture}>📸 Capture Close Position</button>
-                        )}
-                        <button className="cal-skip" onClick={skip}>Skip (2D mode only)</button>
+                        {!sampling && <button className="cal-btn amber" onClick={capture}>📸 Capture Close Position</button>}
+                        <button className="cal-skip" onClick={handleClose}>Skip (2D mode only)</button>
                     </>
                 )}
 
@@ -139,9 +190,7 @@ export default function CalibrationModal({ open, onClose }) {
                         </div>
                         {warn && <div className="cal-warn">✋ No hand detected — make sure your hand is visible.</div>}
                         {sampling && <ProgressBar pct={pct} />}
-                        {!sampling && (
-                            <button className="cal-btn amber" onClick={capture}>📸 Capture Far Position</button>
-                        )}
+                        {!sampling && <button className="cal-btn amber" onClick={capture}>📸 Capture Far Position</button>}
                     </>
                 )}
 
@@ -149,7 +198,7 @@ export default function CalibrationModal({ open, onClose }) {
                     <>
                         <div className="cal-error">{errMsg}</div>
                         <button className="cal-btn amber" onClick={reset}>↺ Try Again</button>
-                        <button className="cal-skip" onClick={skip}>Skip</button>
+                        <button className="cal-skip" onClick={handleClose}>Skip</button>
                     </>
                 )}
 
@@ -168,9 +217,9 @@ export default function CalibrationModal({ open, onClose }) {
     )
 }
 
-function ProgressBar({ pct }) {
+function ProgressBar({ pct, compact }) {
     return (
-        <div className="cal-prog-wrap">
+        <div className={compact ? 'cal-prog-wrap cal-prog-compact' : 'cal-prog-wrap'}>
             <div className="cal-prog-fill" style={{ width: `${pct}%` }} />
             <span className="cal-prog-label">Sampling… {Math.round(pct)}%</span>
         </div>

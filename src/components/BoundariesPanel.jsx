@@ -156,7 +156,14 @@ export default function BoundariesPanel() {
                         onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
                         style={{ cursor: pending ? 'default' : 'crosshair' }}
                     />
-                    {camReady && !pending && <div className="draw-hint">Click and drag to draw a zone</div>}
+                    {/* Zone depth HUD — anchored to bottom of canvas area */}
+                    <ZoneDepthModal
+                        open={!!depthZoneId}
+                        zoneId={depthZoneId}
+                        onClose={() => setDepthZoneId(null)}
+                    />
+
+                    {camReady && !pending && !depthZoneId && <div className="draw-hint">Click and drag to draw a zone</div>}
                     {pending && (
                         <div className="label-dialog fade-in">
                             <div className="label-dialog-title">Name this zone</div>
@@ -224,11 +231,6 @@ export default function BoundariesPanel() {
                 </div>
             </div>
 
-            <ZoneDepthModal
-                open={!!depthZoneId}
-                zoneId={depthZoneId}
-                onClose={() => setDepthZoneId(null)}
-            />
         </>
     )
 }

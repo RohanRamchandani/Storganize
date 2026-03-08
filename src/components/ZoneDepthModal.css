@@ -1,248 +1,210 @@
 /* ── Animations ── */
-@keyframes zdm-fadeIn  { from { opacity: 0 } to { opacity: 1 } }
-@keyframes zdm-slideUp { from { transform: translateY(32px) scale(0.95); opacity: 0 } to { transform: none; opacity: 1 } }
-@keyframes zdm-pulse   { 0%, 100% { opacity: 1 } 50% { opacity: 0.5 } }
+@keyframes zdm-rise  { from { transform: translateY(100%); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+@keyframes zdm-pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.5 } }
 
-/* ── Backdrop ── */
-.zdm-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 200; padding: 20px;
-    animation: zdm-fadeIn 0.2s ease;
+/* ══════════════════════════════════════════════
+   HUD — bottom bar anchored inside viewport
+   ══════════════════════════════════════════════ */
+.zdm-hud {
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 30;
+    display: flex; align-items: center; gap: 0;
+    padding: 12px 18px;
+    background: rgba(13, 13, 15, 0.90);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    animation: zdm-rise 0.28s cubic-bezier(0.34, 1.1, 0.64, 1);
 }
 
-/* ── Card ── */
-.zdm-card {
-    background: #1C1C1E;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    width: 420px; max-width: 100%;
-    box-shadow: 0 32px 96px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255,255,255,0.04) inset;
-    animation: zdm-slideUp 0.32s cubic-bezier(0.34, 1.18, 0.64, 1);
-    padding: 24px 24px 20px;
-    display: flex; flex-direction: column; gap: 14px;
+/* ── Left section ── */
+.zdm-hud-left {
+    display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0;
 }
 
-/* ── Tag / eyebrow ── */
-.zdm-tag {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+.zdm-hud-header {
+    display: flex; align-items: center; gap: 8px;
+}
+
+.zdm-hud-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.7px;
     text-transform: uppercase; color: #0A84FF;
-    text-align: center;
 }
 
-/* ── Title ── */
-.zdm-title {
-    font-size: 18px; font-weight: 700;
-    color: #F5F5F7; text-align: center;
-    letter-spacing: -0.4px; margin-top: -6px;
-}
-
-/* ── Sub / description ── */
-.zdm-sub {
-    font-size: 13px; color: rgba(255, 255, 255, 0.45);
-    text-align: center; line-height: 1.55;
-    margin-top: -4px;
-}
-
-/* ── Zone name pill ── */
+/* Zone name pill */
 .zdm-zone-name {
     display: inline-flex; align-items: center; justify-content: center;
-    padding: 5px 16px; border-radius: 980px;
-    font-size: 12px; font-weight: 700;
+    padding: 2px 10px; border-radius: 980px;
+    font-size: 11px; font-weight: 700;
     border: 1px solid transparent;
-    width: fit-content; margin: 0 auto;
-    letter-spacing: 0.1px;
 }
 
-/* ── Depth Visualiser ── */
-.zdm-viz {
-    display: flex; flex-direction: column; gap: 6px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 14px 16px;
+.zdm-no-cal-inline {
+    font-size: 10px; color: #FF9F0A;
+    background: rgba(255, 159, 10, 0.1);
+    border: 1px solid rgba(255, 159, 10, 0.2);
+    border-radius: 6px; padding: 2px 8px;
 }
 
-.zdm-viz-labels {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.3px;
-    color: rgba(255, 255, 255, 0.3);
-    text-transform: uppercase;
+/* ── Track row ── */
+.zdm-track-row {
+    display: flex; align-items: center; gap: 8px;
 }
 
-.zdm-viz-labels span:nth-child(2) {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 10px; font-weight: 500;
-    letter-spacing: 0; text-transform: none;
+.zdm-track-end {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: rgba(255, 255, 255, 0.25);
+    flex-shrink: 0; width: 28px;
 }
+.zdm-track-end:last-child { text-align: right; }
 
 /* ── Track ── */
 .zdm-track {
+    flex: 1;
     position: relative;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.06);
+    height: 22px;
+    background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
+    border-radius: 11px;
     overflow: visible;
 }
 
 /* Tolerance range band */
 .zdm-range {
-    position: absolute;
-    top: 0; bottom: 0;
-    background: rgba(10, 132, 255, 0.18);
-    border: 1px solid rgba(10, 132, 255, 0.35);
-    border-radius: 12px;
+    position: absolute; top: 0; bottom: 0;
+    background: rgba(10, 132, 255, 0.2);
+    border: 1px solid rgba(10, 132, 255, 0.38);
+    border-radius: 10px;
     pointer-events: none;
-    transition: left 0.12s, width 0.12s;
+    transition: left 0.1s, width 0.1s;
 }
 
-/* Target marker (captured depth) */
+/* Target marker */
 .zdm-target {
-    position: absolute;
-    top: 50%;
+    position: absolute; top: 50%;
     transform: translate(-50%, -50%);
-    width: 3px; height: 20px;
+    width: 3px; height: 16px;
     background: #0A84FF;
     border-radius: 2px;
     pointer-events: none;
-    box-shadow: 0 0 8px rgba(10, 132, 255, 0.7);
+    box-shadow: 0 0 6px rgba(10, 132, 255, 0.7);
 }
 
 /* Live hand cursor */
 .zdm-cursor {
-    position: absolute;
-    top: 50%;
+    position: absolute; top: 50%;
     transform: translate(-50%, -50%);
-    width: 18px; height: 18px;
-    background: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.25), 0 2px 8px rgba(0,0,0,0.5);
+    width: 14px; height: 14px;
+    background: #fff; border-radius: 50%;
+    pointer-events: none; z-index: 2;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.22), 0 2px 6px rgba(0,0,0,0.5);
     transition: left 0.04s linear;
-    z-index: 2;
 }
 
-/* ── Visualiser footer (palm size values) ── */
-.zdm-viz-foot {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 10px; color: rgba(255, 255, 255, 0.22);
-    letter-spacing: 0.2px; margin-top: 2px;
+/* ── Divider ── */
+.zdm-hud-divider {
+    width: 1px; align-self: stretch;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0 16px; flex-shrink: 0;
 }
 
-.zdm-viz-foot span:nth-child(2) { color: rgba(255,255,255,0.18); }
-
-/* ── No calibration warning ── */
-.zdm-no-cal {
-    font-size: 12px; color: #FF9F0A;
-    background: rgba(255, 159, 10, 0.08);
-    border: 1px solid rgba(255, 159, 10, 0.2);
-    border-radius: 10px; padding: 10px 14px;
-    line-height: 1.5; text-align: center;
+/* ── Right section ── */
+.zdm-hud-right {
+    display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; width: 260px;
 }
 
-/* ── Tolerance section ── */
-.zdm-tol-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
-    text-transform: uppercase; color: rgba(255, 255, 255, 0.3);
-    margin-bottom: -4px;
-}
-
+/* ── Tolerance row ── */
 .zdm-tol-row {
     display: grid;
-    grid-template-columns: 36px 1fr 36px 40px;
-    align-items: center; gap: 8px;
+    grid-template-columns: 32px 1fr 32px 38px;
+    align-items: center; gap: 6px;
 }
 
 .zdm-tol-side {
-    font-size: 10px; font-weight: 600;
+    font-size: 9px; font-weight: 600; letter-spacing: 0.3px;
     color: rgba(255, 255, 255, 0.3);
-    letter-spacing: 0.2px;
 }
+.zdm-tol-side:last-of-type { text-align: right; }
 
 .zdm-tol-val {
-    font-size: 12px; font-weight: 700;
-    color: #0A84FF; text-align: right;
-    white-space: nowrap;
+    font-size: 11px; font-weight: 700;
+    color: #0A84FF; text-align: right; white-space: nowrap;
 }
 
 /* ── Slider ── */
 .zdm-slider {
-    width: 100%; height: 4px;
+    width: 100%; height: 3px;
     accent-color: #0A84FF;
     -webkit-appearance: none; appearance: none;
     border-radius: 2px;
     background: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    outline: none;
+    cursor: pointer; outline: none;
 }
 .zdm-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: #0A84FF;
-    cursor: pointer;
-    box-shadow: 0 0 0 3px rgba(10,132,255,0.25);
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #0A84FF; cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(10,132,255,0.22);
 }
 
-/* ── Warning ── */
-.zdm-warn {
-    font-size: 12px; color: #FF453A;
-    background: rgba(255, 69, 58, 0.08);
-    border: 1px solid rgba(255, 69, 58, 0.2);
-    border-radius: 10px; padding: 9px 14px;
-    text-align: center;
+/* ── Action row ── */
+.zdm-hud-actions {
+    display: flex; align-items: center; gap: 6px;
 }
+
+.zdm-warn-inline {
+    font-size: 11px; color: #FF453A;
+    background: rgba(255, 69, 58, 0.1);
+    border: 1px solid rgba(255, 69, 58, 0.2);
+    border-radius: 7px; padding: 3px 8px;
+    white-space: nowrap; flex-shrink: 0;
+}
+
+/* ── Capture button ── */
+.zdm-btn {
+    flex: 1; height: 32px;
+    border: none; border-radius: 9px;
+    background: #0A84FF; color: #fff;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; letter-spacing: -0.1px;
+    transition: opacity 0.15s, transform 0.1s;
+    box-shadow: 0 3px 10px rgba(10, 132, 255, 0.32);
+    white-space: nowrap;
+}
+.zdm-btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+.zdm-btn:active { opacity: 1;   transform: translateY(0); }
+
+/* ── Close button ── */
+.zdm-skip {
+    height: 32px; width: 32px; flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+    background: transparent; color: rgba(255, 255, 255, 0.3);
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+.zdm-skip:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6); }
 
 /* ── Sampling progress bar ── */
 .zdm-prog-wrap {
-    position: relative;
-    height: 34px;
+    flex: 1; position: relative;
+    height: 32px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-    overflow: hidden;
+    border-radius: 9px; overflow: hidden;
 }
 
 .zdm-prog-fill {
     position: absolute; inset-y: 0; left: 0;
-    background: linear-gradient(90deg, rgba(10,132,255,0.4), rgba(10,132,255,0.6));
-    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(10,132,255,0.4), rgba(10,132,255,0.65));
+    border-radius: 9px;
     transition: width 0.08s linear;
 }
 
 .zdm-prog-label {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px; font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
     animation: zdm-pulse 1s ease-in-out infinite;
 }
-
-/* ── Capture button ── */
-.zdm-btn {
-    width: 100%; height: 44px;
-    border: none; border-radius: 12px;
-    background: #0A84FF; color: #fff;
-    font-family: inherit; font-size: 14px; font-weight: 600;
-    cursor: pointer; letter-spacing: -0.1px;
-    transition: opacity 0.15s, transform 0.12s;
-    box-shadow: 0 4px 16px rgba(10, 132, 255, 0.35);
-}
-.zdm-btn:hover  { opacity: 0.9; transform: translateY(-1px); }
-.zdm-btn:active { opacity: 1;   transform: translateY(0); }
-
-/* ── Close button ── */
-.zdm-skip {
-    width: 100%; height: 38px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    background: transparent; color: rgba(255, 255, 255, 0.35);
-    font-family: inherit; font-size: 13px; cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    margin-top: -4px;
-}
-.zdm-skip:hover { background: rgba(255, 255, 255, 0.06); color: rgba(255,255,255,0.55); }

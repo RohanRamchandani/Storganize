@@ -867,6 +867,9 @@ export default function CameraPanel() {
                     </div>
                 )}
 
+                {/* Calibration HUD — bottom of viewport, camera stays visible */}
+                <CalibrationModal open={showCalModal} onClose={() => setShowCalModal(false)} hud />
+
                 {/* Remove confirmation overlay */}
                 {removeCandidate && (
                     <div className="remove-confirm-overlay">
@@ -1007,8 +1010,6 @@ export default function CameraPanel() {
                 </div>
             </div>
 
-            {/* Calibration modal */}
-            <CalibrationModal open={showCalModal} onClose={() => setShowCalModal(false)} />
         </div>
     )
 }

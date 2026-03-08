@@ -8,9 +8,8 @@ const SAMPLE_DURATION_MS = 1200
 const SAMPLE_INTERVAL_MS = 80
 
 /**
- * Per-zone depth capture modal.
- * Opens for a specific zone. User positions hand at zone depth, captures,
- * and the zone's depthTarget is stored.
+ * Per-zone depth capture HUD.
+ * Anchored to the bottom of its parent container — camera stays fully visible.
  */
 export default function ZoneDepthModal({ open, zoneId, onClose }) {
     const { handStateRef, calibration } = useDepth()
@@ -24,19 +23,18 @@ export default function ZoneDepthModal({ open, zoneId, onClose }) {
     const [pct, setPct]             = useState(0)
     const [captured, setCaptured]   = useState(false)
 
-    const intervalRef  = useRef(null)
-    const rafRef       = useRef(null)
-    const cursorRef    = useRef(null)
-    const rangeRef     = useRef(null)
-    const targetRef    = useRef(null)
+    const intervalRef = useRef(null)
+    const rafRef      = useRef(null)
+    const cursorRef   = useRef(null)
+    const rangeRef    = useRef(null)
+    const targetRef   = useRef(null)
 
-    // Sync tolerance when zone changes
     useEffect(() => {
         if (zone) setTolerance(zone.depthTolerance ?? 20)
         setCaptured(!!zone?.depthTarget)
     }, [zoneId, zone])
 
-    // Live cursor update via RAF
+    // Live cursor via RAF
     useEffect(() => {
         if (!open) return
         let running = true
@@ -65,7 +63,7 @@ export default function ZoneDepthModal({ open, zoneId, onClose }) {
     }, [calibration])
 
     const capture = useCallback(() => {
-        const hs  = handStateRef.current
+        const hs     = handStateRef.current
         const handOk = hs.handVisible || hs.gracePeriod
         if (!handOk) { setWarn(true); return }
 
@@ -109,46 +107,37 @@ export default function ZoneDepthModal({ open, zoneId, onClose }) {
     const calReady = !!calibration
 
     return (
-        <div className="zdm-backdrop" onClick={e => e.target === e.currentTarget && handleClose()}>
-            <div className="zdm-card">
-                <div className="zdm-tag">Zone Depth Setup</div>
-                <div className="zdm-title">Set Zone Depth</div>
-                <div className="zdm-sub">
-                    Position your hand at the depth where items will be placed in this zone, then capture.
+        <div className="zdm-hud">
+            {/* Left: zone name + depth track */}
+            <div className="zdm-hud-left">
+                <div className="zdm-hud-header">
+                    <span className="zdm-hud-tag">Zone Depth</span>
+                    <span
+                        className="zdm-zone-name"
+                        style={{ background: zone.color + '22', borderColor: zone.color + '55', color: zone.color }}
+                    >
+                        {zone.label}
+                    </span>
+                    {!calReady && (
+                        <span className="zdm-no-cal-inline">⚠️ Calibrate depth first</span>
+                    )}
                 </div>
-                <div className="zdm-zone-name" style={{ background: zone.color + '22', borderColor: zone.color + '55', color: zone.color }}>
-                    {zone.label}
-                </div>
-
-                {/* Depth visualiser */}
-                <div className="zdm-viz">
-                    <div className="zdm-viz-labels">
-                        <span>FAR</span>
-                        <span>Current hand depth</span>
-                        <span>NEAR</span>
-                    </div>
+                <div className="zdm-track-row">
+                    <span className="zdm-track-end">FAR</span>
                     <div className="zdm-track">
                         <div className="zdm-range"  ref={rangeRef}  style={{ left: 0, width: 0 }} />
                         <div className="zdm-target" ref={targetRef} style={{ left: '50%', display: 'none' }} />
                         <div className="zdm-cursor" ref={cursorRef} style={{ left: '50%' }} />
                     </div>
-                    {calReady && (
-                        <div className="zdm-viz-foot">
-                            <span>{calibration.farPalmSize.toFixed(0)}px</span>
-                            <span>palm size</span>
-                            <span>{calibration.nearPalmSize.toFixed(0)}px</span>
-                        </div>
-                    )}
+                    <span className="zdm-track-end">NEAR</span>
                 </div>
+            </div>
 
-                {!calReady && (
-                    <div className="zdm-no-cal">
-                        ⚠️ No global calibration found. Run "Calibrate Depth" first for the depth bar to work, but you can still capture a depth target.
-                    </div>
-                )}
+            {/* Divider */}
+            <div className="zdm-hud-divider" />
 
-                {/* Tolerance slider */}
-                <div className="zdm-tol-label">DEPTH TOLERANCE (±px accepted)</div>
+            {/* Right: tolerance + actions */}
+            <div className="zdm-hud-right">
                 <div className="zdm-tol-row">
                     <span className="zdm-tol-side">Tight</span>
                     <input
@@ -160,23 +149,23 @@ export default function ZoneDepthModal({ open, zoneId, onClose }) {
                             if (zone.depthTarget) updateRangeBar(zone.depthTarget, t)
                         }}
                     />
-                    <span className="zdm-tol-side" style={{ textAlign: 'right' }}>Loose</span>
+                    <span className="zdm-tol-side">Loose</span>
                     <span className="zdm-tol-val">±{tolerance}px</span>
                 </div>
-
-                {warn    && <div className="zdm-warn">✋ No hand detected — make sure your hand is visible.</div>}
-                {sampling && (
-                    <div className="zdm-prog-wrap">
-                        <div className="zdm-prog-fill" style={{ width: `${pct}%` }} />
-                        <span className="zdm-prog-label">Sampling… {Math.round(pct)}%</span>
-                    </div>
-                )}
-                {!sampling && (
-                    <button className="zdm-btn" onClick={capture}>
-                        {captured ? '↺ Recapture Depth' : '📐 Capture Depth at This Zone'}
-                    </button>
-                )}
-                <button className="zdm-skip" onClick={handleClose}>Close</button>
+                <div className="zdm-hud-actions">
+                    {warn && <span className="zdm-warn-inline">✋ No hand</span>}
+                    {sampling ? (
+                        <div className="zdm-prog-wrap">
+                            <div className="zdm-prog-fill" style={{ width: `${pct}%` }} />
+                            <span className="zdm-prog-label">Sampling… {Math.round(pct)}%</span>
+                        </div>
+                    ) : (
+                        <button className="zdm-btn" onClick={capture}>
+                            {captured ? '↺ Recapture' : '📐 Capture Depth'}
+                        </button>
+                    )}
+                    <button className="zdm-skip" onClick={handleClose}>✕</button>
+                </div>
             </div>
         </div>
     )
