@@ -17,7 +17,7 @@ const SAMPLE_W = 64, SAMPLE_H = 48
 const PIXEL_W  = 96, PIXEL_H  = 72
 
 // ── ElevenLabs config ─────────────────────────────────────────
-const ELEVENLABS_API_KEY  = 'sk_60a1e27c2284579def10d8f95dae5697a50219a318b1fd34'
+const ELEVENLABS_API_KEY  = import.meta.env.VITE_ELEVENLABS_API_KEY || ''
 const ELEVENLABS_VOICE_ID = 'JBFqnCBsd6RMkjVDRZzb'
 const ELEVENLABS_URL      = `https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`
 
@@ -137,7 +137,7 @@ export default function CameraPanel() {
     const [diffScore, setDiffScore] = useState(0)
     const [countdown, setCountdown] = useState(null)
     const [scanStatus, setScanStatus] = useState(STATUS_IDLE)
-    const [apiKey, setApiKey]         = useState(() => localStorage.getItem('stifficiency_gemini_key') || import.meta.env.VITE_GEMINI_API_KEY || 'AIzaSyD-GJXGcl9TIfvegUk4eVVq2-dBsa-UJOQ')
+    const [apiKey, setApiKey]         = useState(() => localStorage.getItem('stifficiency_gemini_key') || import.meta.env.VITE_GEMINI_API_KEY || '')
     const [keyInput, setKeyInput]     = useState('')
     const [showKeyInput, setShowKeyInput] = useState(false)
     const [showCalModal, setShowCalModal] = useState(false)

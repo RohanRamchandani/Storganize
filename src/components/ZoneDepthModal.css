@@ -1,23 +1,23 @@
 .zdm-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(17, 24, 39, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 200;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     animation: fadeIn 0.15s ease;
 }
 
 .zdm-card {
-    background: #0d1120;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 26px;
-    width: 370px;
+    background: #FFFFFF;
+    border: 1px solid rgba(17, 24, 39, 0.1);
+    border-radius: 20px;
+    padding: 28px;
+    width: 380px;
     max-width: 92vw;
-    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.14), 0 4px 20px rgba(0,0,0,0.06);
 }
 
 .zdm-tag {
@@ -26,25 +26,25 @@
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #4fc3f7;
-    background: rgba(79, 195, 247, 0.1);
-    border: 1px solid rgba(79, 195, 247, 0.25);
+    color: #0D9488;
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.22);
     padding: 3px 9px;
-    border-radius: 4px;
+    border-radius: 5px;
     margin-bottom: 12px;
 }
 
 .zdm-title {
+    font-family: 'Poppins', sans-serif;
     font-size: 20px;
-    font-weight: 800;
-    color: #f0f2ff;
+    font-weight: 700;
+    color: #111827;
     margin-bottom: 6px;
-    font-family: 'Inter', sans-serif;
 }
 
 .zdm-sub {
     font-size: 12px;
-    color: #8892b0;
+    color: #6B7280;
     line-height: 1.6;
     margin-bottom: 14px;
 }
@@ -61,9 +61,9 @@
 
 /* Depth visualiser */
 .zdm-viz {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    border-radius: 12px;
     padding: 14px;
     margin-bottom: 14px;
 }
@@ -72,14 +72,14 @@
     display: flex;
     justify-content: space-between;
     font-size: 9px;
-    color: #4a5568;
+    color: #9CA3AF;
     margin-bottom: 8px;
     letter-spacing: 0.3px;
 }
 
 .zdm-track {
     height: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(17, 24, 39, 0.06);
     border-radius: 5px;
     position: relative;
     overflow: visible;
@@ -89,8 +89,8 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    background: rgba(79, 195, 247, 0.25);
-    border: 1px solid #4fc3f7;
+    background: rgba(20, 184, 166, 0.18);
+    border: 1px solid #14B8A6;
     border-radius: 5px;
     transition: all 0.1s;
 }
@@ -100,7 +100,7 @@
     top: -5px;
     width: 2px;
     height: 20px;
-    background: #4fc3f7;
+    background: #14B8A6;
     transform: translateX(-50%);
     transition: left 0.1s;
 }
@@ -111,24 +111,24 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #f59e0b;
-    border: 2px solid #0d1120;
+    background: #F59E0B;
+    border: 2px solid #FFFFFF;
     transform: translateX(-50%);
     transition: left 0.06s;
-    box-shadow: 0 0 8px #f59e0b;
+    box-shadow: 0 1px 6px rgba(245, 158, 11, 0.4);
 }
 
 .zdm-viz-foot {
     display: flex;
     justify-content: space-between;
     font-size: 9px;
-    color: #4a5568;
+    color: #9CA3AF;
     margin-top: 7px;
 }
 
 .zdm-no-cal {
     font-size: 11px;
-    color: #f59e0b;
+    color: #D97706;
     background: rgba(245, 158, 11, 0.07);
     border: 1px solid rgba(245, 158, 11, 0.2);
     border-radius: 8px;
@@ -140,9 +140,10 @@
 /* Tolerance */
 .zdm-tol-label {
     font-size: 9px;
-    color: #4a5568;
+    color: #9CA3AF;
     letter-spacing: 0.5px;
     margin-bottom: 7px;
+    text-transform: uppercase;
 }
 
 .zdm-tol-row {
@@ -154,7 +155,7 @@
 
 .zdm-tol-side {
     font-size: 10px;
-    color: #4a5568;
+    color: #9CA3AF;
 }
 
 .zdm-slider {
@@ -162,37 +163,38 @@
     height: 4px;
     -webkit-appearance: none;
     appearance: none;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(17, 24, 39, 0.1);
     border-radius: 2px;
     outline: none;
 }
 
 .zdm-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
-    background: #4fc3f7;
+    background: #14B8A6;
     cursor: pointer;
-    border: 2px solid #0d1120;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 1px 4px rgba(20, 184, 166, 0.3);
 }
 
 .zdm-tol-val {
     font-size: 11px;
     font-weight: 700;
-    color: #4fc3f7;
+    color: #0D9488;
     width: 42px;
     text-align: right;
 }
 
 /* Warn */
 .zdm-warn {
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.22);
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 12px;
-    color: #f59e0b;
+    color: #D97706;
     margin-bottom: 12px;
 }
 
@@ -200,8 +202,8 @@
 .zdm-prog-wrap {
     position: relative;
     height: 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    background: #F1F5F9;
+    border-radius: 10px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -213,8 +215,8 @@
     left: 0;
     top: 0;
     bottom: 0;
-    background: linear-gradient(90deg, #4fc3f7, #7c6af7);
-    border-radius: 8px;
+    background: linear-gradient(90deg, #14B8A6, #2563EB);
+    border-radius: 10px;
     transition: width 0.08s linear;
 }
 
@@ -230,29 +232,31 @@
 /* Buttons */
 .zdm-btn {
     width: 100%;
-    height: 40px;
+    height: 42px;
     border: none;
-    border-radius: 9px;
+    border-radius: 10px;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     margin-bottom: 8px;
-    background: #4fc3f7;
-    color: #000;
-    transition: opacity 0.15s;
+    background: linear-gradient(135deg, #14B8A6, #0D9488);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(20, 184, 166, 0.28);
+    transition: opacity 0.15s, transform 0.15s;
 }
 
 .zdm-btn:hover {
-    opacity: 0.88;
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
 .zdm-skip {
     width: 100%;
-    height: 34px;
+    height: 36px;
     background: transparent;
-    color: #4a5568;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #6B7280;
+    border: 1px solid rgba(17, 24, 39, 0.1);
     border-radius: 8px;
     font-family: 'Inter', sans-serif;
     font-size: 12px;
@@ -261,8 +265,8 @@
 }
 
 .zdm-skip:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #f0f2ff;
+    background: #F1F5F9;
+    color: #374151;
 }
 
 @keyframes fadeIn {

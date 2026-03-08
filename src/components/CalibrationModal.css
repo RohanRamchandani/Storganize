@@ -1,23 +1,23 @@
 .cal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(17, 24, 39, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 200;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     animation: fadeIn 0.15s ease;
 }
 
 .cal-card {
-    background: #0d1120;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 28px;
-    width: 400px;
+    background: #FFFFFF;
+    border: 1px solid rgba(17, 24, 39, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    width: 420px;
     max-width: 92vw;
-    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 16px 60px rgba(0, 0, 0, 0.14), 0 4px 20px rgba(0,0,0,0.06);
 }
 
 .cal-tag {
@@ -26,25 +26,25 @@
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #f59e0b;
-    background: rgba(245, 158, 11, 0.1);
-    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #D97706;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.22);
     padding: 3px 9px;
-    border-radius: 4px;
+    border-radius: 5px;
     margin-bottom: 12px;
 }
 
 .cal-title {
+    font-family: 'Poppins', sans-serif;
     font-size: 22px;
-    font-weight: 800;
-    color: #f0f2ff;
+    font-weight: 700;
+    color: #111827;
     margin-bottom: 6px;
-    font-family: 'Inter', sans-serif;
 }
 
 .cal-sub {
     font-size: 12px;
-    color: #8892b0;
+    color: #6B7280;
     line-height: 1.6;
     margin-bottom: 20px;
 }
@@ -60,45 +60,48 @@
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
+    background: #F1F5F9;
+    border: 1px solid rgba(17,24,39,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
     font-weight: 700;
-    color: #4a5568;
+    color: #9CA3AF;
     flex-shrink: 0;
     transition: all 0.3s;
 }
 
 .cal-dot.active {
-    background: #f59e0b;
-    color: #000;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+    background: #F59E0B;
+    color: #fff;
+    border-color: #F59E0B;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
 }
 
 .cal-dot.done {
-    background: #43e97b;
-    color: #000;
+    background: #10B981;
+    color: #fff;
+    border-color: #10B981;
 }
 
 .cal-line {
     flex: 1;
     height: 2px;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(17, 24, 39, 0.08);
     margin: 0 5px;
     transition: background 0.3s;
 }
 
 .cal-line.done {
-    background: #43e97b;
+    background: #10B981;
 }
 
 /* Instruction box */
 .cal-instr-box {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    border-radius: 12px;
     padding: 14px;
     margin-bottom: 14px;
 }
@@ -111,38 +114,38 @@
 .cal-instr-title {
     font-size: 13px;
     font-weight: 700;
-    color: #f0f2ff;
+    color: #111827;
     margin-bottom: 5px;
 }
 
 .cal-instr-body {
     font-size: 12px;
-    color: #8892b0;
+    color: #6B7280;
     line-height: 1.6;
 }
 
 .cal-instr-body strong {
-    color: #f0f2ff;
+    color: #111827;
 }
 
 /* Warn / error */
 .cal-warn {
-    background: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.22);
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 12px;
-    color: #f59e0b;
+    color: #D97706;
     margin-bottom: 12px;
 }
 
 .cal-error {
-    background: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.18);
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 12px;
-    color: #fca5a5;
+    color: #DC2626;
     line-height: 1.6;
     margin-bottom: 14px;
 }
@@ -151,8 +154,8 @@
 .cal-prog-wrap {
     position: relative;
     height: 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    background: #F1F5F9;
+    border-radius: 10px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -164,8 +167,8 @@
     left: 0;
     top: 0;
     bottom: 0;
-    background: linear-gradient(90deg, #f59e0b, #fb923c);
-    border-radius: 8px;
+    background: linear-gradient(90deg, #F59E0B, #FB923C);
+    border-radius: 10px;
     transition: width 0.08s linear;
 }
 
@@ -181,37 +184,40 @@
 /* Buttons */
 .cal-btn {
     width: 100%;
-    height: 40px;
+    height: 42px;
     border: none;
-    border-radius: 9px;
+    border-radius: 10px;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
     margin-bottom: 8px;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s, transform 0.15s;
 }
 
 .cal-btn.amber {
-    background: #f59e0b;
-    color: #000;
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
 }
 
 .cal-btn.green {
-    background: #43e97b;
-    color: #000;
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
 }
 
 .cal-btn:hover {
-    opacity: 0.88;
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
 .cal-skip {
     width: 100%;
-    height: 34px;
+    height: 36px;
     background: transparent;
-    color: #4a5568;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #6B7280;
+    border: 1px solid rgba(17, 24, 39, 0.1);
     border-radius: 8px;
     font-family: 'Inter', sans-serif;
     font-size: 12px;
@@ -220,8 +226,8 @@
 }
 
 .cal-skip:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #f0f2ff;
+    background: #F1F5F9;
+    color: #374151;
 }
 
 /* Success */
@@ -237,14 +243,14 @@
 }
 
 .cal-success p {
-    color: #43e97b;
+    color: #059669;
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 4px;
 }
 
 .cal-success small {
-    color: #8892b0;
+    color: #6B7280;
     font-size: 11px;
     display: block;
     margin-bottom: 18px;
