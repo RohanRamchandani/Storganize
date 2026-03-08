@@ -12,7 +12,7 @@ import './CameraPanel.css'
 const IDLE_INTERVAL_MS   = 500    // poll twice per second when idle
 const ACTIVE_INTERVAL_MS = 120
 const MOTION_THRESHOLD   = 15    // more sensitive — triggers on light movement
-const IDLE_TIMEOUT_MS   = 30 * 1000
+const IDLE_TIMEOUT_MS   = 60 * 1000
 const SAMPLE_W = 64, SAMPLE_H = 48
 const PIXEL_W  = 96, PIXEL_H  = 72
 
@@ -901,7 +901,15 @@ export default function CameraPanel() {
                         onSubmit={e => {
                             e.preventDefault()
                             const q = searchText.trim()
-                            if (q) { findItemRef.current?.(q); setSearchText('') }
+                            if (!q) return
+                            if (q.toUpperCase() === 'TESTONBOARDING') {
+                                localStorage.removeItem('storganize_onboarding_done')
+                                window.dispatchEvent(new CustomEvent('storganize:admin', { detail: 'TESTONBOARDING' }))
+                                setSearchText('')
+                                return
+                            }
+                            findItemRef.current?.(q)
+                            setSearchText('')
                         }}
                     >
                         <input

@@ -39,7 +39,7 @@ export default function OnboardingModal({ onClose }) {
 
     return (
         <>
-            <div className="ob-backdrop">
+            <div className="ob-backdrop" style={{ display: showCal ? 'none' : undefined }}>
                 <div className="ob-card">
                     {/* Step dots */}
                     <div className="ob-dots">

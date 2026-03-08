@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ZonesProvider } from './context/ZonesContext'
 import { ItemsProvider } from './context/ItemsContext'
 import { DepthProvider } from './context/DepthContext'
@@ -18,6 +18,14 @@ const TABS = [
 export default function App() {
     const [activeTab, setActiveTab] = useState('camera')
     const [showOnboarding, setShowOnboarding] = useState(() => shouldShowOnboarding())
+
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.detail === 'TESTONBOARDING') setShowOnboarding(true)
+        }
+        window.addEventListener('storganize:admin', handler)
+        return () => window.removeEventListener('storganize:admin', handler)
+    }, [])
 
     return (
         <ZonesProvider>
